@@ -49,6 +49,7 @@ npm-debug.log*
 .tmp/
 .chrometmp/
 m*-dashboard.png
+audit-m*-dashboard.png
 
 # Python
 __pycache__/

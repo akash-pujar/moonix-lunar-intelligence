@@ -1,0 +1,42 @@
+{
+  "shackleton-rim": {
+    "count": 4344,
+    "startTime": "2027-01-01T00:00:00Z",
+    "endTime": "2027-06-30T23:00:00Z",
+    "sun_el_min": -1.98,
+    "sun_el_max": 0.99,
+    "earth_el_min": -6.64,
+    "earth_el_max": 7.01,
+    "earth_el_mean": 0.004373848987108655
+  },
+  "malapert-massif": {
+    "count": 4344,
+    "startTime": "2027-01-01T00:00:00Z",
+    "endTime": "2027-06-30T23:00:00Z",
+    "sun_el_min": -5.52,
+    "sun_el_max": 4.5,
+    "earth_el_min": -3.12,
+    "earth_el_max": 10.53,
+    "earth_el_mean": 3.534191988950276
+  },
+  "nobile-rim": {
+    "count": 4344,
+    "startTime": "2027-01-01T00:00:00Z",
+    "endTime": "2027-06-30T23:00:00Z",
+    "sun_el_min": -6.23,
+    "sun_el_max": 5.3,
+    "earth_el_min": -2.88,
+    "earth_el_max": 10.21,
+    "earth_el_mean": 3.4833333333333334
+  },
+  "apollo-11": {
+    "count": 4344,
+    "startTime": "2027-01-01T00:00:00Z",
+    "endTime": "2027-06-30T23:00:00Z",
+    "sun_el_min": -89.65,
+    "sun_el_max": 89.6,
+    "earth_el_min": 57.96,
+    "earth_el_max": 73.17,
+    "earth_el_mean": 65.67955110497238
+  }
+}

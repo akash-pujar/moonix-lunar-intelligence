@@ -65,7 +65,7 @@ The following verified kernels are stored in `pipeline/kernels/` and documented 
 | `pck00011.tpc` | 131,226 | `3dff7b1dbeceaa01f25467767d3fa25816051c85d162d1edf04acb310ee28bb1` | Physical constants & Moon radii |
 | `moon_080317.tf` | 21,437 | `78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993` | Lunar frame definitions (MOON_ME, MOON_PA) |
 | `moon_assoc_me.tf` | 8,468 | `52c622043ce0447d575e59ee01642f1894921e68c10f934ceff065f362da6c1c` | Directs body 301 to MOON_ME frame |
-| `moon_pa_de421_1900-2050.bpc` | 12,863,488 | `60cd55aa401ea2ea97360636f567554bfe4e37bb829f901b4460a455dfaf783f` | High-precision lunar physical libration |
+| `moon_pa_de421_1900-2050.bpc` | 1,770,496 | `656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf` | High-precision lunar physical libration |
 | `de440s.bsp` | 32,726,016 | `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2` | JPL planetary ephemeris (Sun, Earth, Moon) |
 
 ---
