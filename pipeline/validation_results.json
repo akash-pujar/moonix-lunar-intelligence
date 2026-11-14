@@ -1,0 +1,113 @@
+{
+  "validation_epoch": "2026-11-14T07:33:49Z",
+  "mean_absolute_error_deg": 1e-05,
+  "max_absolute_error_deg": 4e-05,
+  "pass_count": 4,
+  "total_cases": 4,
+  "cases": [
+    {
+      "case_id": 1,
+      "site": "Shackleton Rim",
+      "utc": "2027-03-01 12:00",
+      "lat": -89.54,
+      "lon": 0.0,
+      "spice": {
+        "sun_az": 259.4281,
+        "sun_el": -0.6644,
+        "earth_az": 3.4466,
+        "earth_el": -5.421
+      },
+      "horizons": {
+        "sun_az": 259.4281,
+        "sun_el": -0.6644,
+        "earth_az": 3.4466,
+        "earth_el": -5.4211
+      },
+      "deltas": {
+        "sun_az": 0.0,
+        "sun_el": 0.0,
+        "earth_az": 0.0,
+        "earth_el": 0.0
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": 2,
+      "site": "Malapert Massif",
+      "utc": "2027-07-15 00:00",
+      "lat": -86.0,
+      "lon": 0.0,
+      "spice": {
+        "sun_az": 45.5225,
+        "sun_el": 2.2637,
+        "earth_az": 5.3183,
+        "earth_el": -2.1479
+      },
+      "horizons": {
+        "sun_az": 45.5225,
+        "sun_el": 2.2637,
+        "earth_az": 5.3184,
+        "earth_el": -2.1479
+      },
+      "deltas": {
+        "sun_az": 0.0,
+        "sun_el": 0.0,
+        "earth_az": 0.0,
+        "earth_el": 0.0
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": 3,
+      "site": "Nobile Rim",
+      "utc": "2027-11-20 18:00",
+      "lat": -85.3,
+      "lon": 32.5,
+      "spice": {
+        "sun_az": 242.6046,
+        "sun_el": -0.7651,
+        "earth_az": 328.7293,
+        "earth_el": 1.5491
+      },
+      "horizons": {
+        "sun_az": 242.6046,
+        "sun_el": -0.7651,
+        "earth_az": 328.7293,
+        "earth_el": 1.549
+      },
+      "deltas": {
+        "sun_az": 0.0,
+        "sun_el": 0.0,
+        "earth_az": 0.0,
+        "earth_el": 0.0
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": 4,
+      "site": "Apollo 11 (Tranquility Base)",
+      "utc": "2027-04-10 06:00",
+      "lat": 0.674,
+      "lon": 23.473,
+      "spice": {
+        "sun_az": 88.3029,
+        "sun_el": -21.3983,
+        "earth_az": 254.8584,
+        "earth_el": 61.9565
+      },
+      "horizons": {
+        "sun_az": 88.3029,
+        "sun_el": -21.3983,
+        "earth_az": 254.8584,
+        "earth_el": 61.9565
+      },
+      "deltas": {
+        "sun_az": 0.0,
+        "sun_el": 0.0,
+        "earth_az": 0.0,
+        "earth_el": 0.0
+      },
+      "status": "PASS"
+    }
+  ]
+}

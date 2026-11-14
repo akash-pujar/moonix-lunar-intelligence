@@ -58,33 +58,38 @@
 - The ray-march accounts for lunar curvature so that distant terrain is correctly foreshortened.
 - **Current status:** No terrain data is currently processed. All sites use the flat horizon model until the LOLA DEM pipeline is implemented and run.
 
-## 5. Ephemeris Models
+## 5. Ephemeris Data Provenance Tiers
 
-### 5.1 SPICE-Based (High Accuracy)
+MOONIX strictly differentiates its astronomical data sources so that users always know the provenance and fidelity of every displayed value:
 
-- Uses NASA NAIF SPICE kernels via **SpiceyPy**.
-- Target accuracy: **< 0.1°** vs JPL Horizons for sun/earth elevation and azimuth.
-- Requires kernel files to be downloaded and the Python pipeline to be executed.
+### 5.1 Tier 1: SPICE-Derived Ephemeris (Production Standard)
+- **Engine:** NASA NAIF SPICE toolkit (CSPICE N0067 via SpiceyPy 8.4.0).
+- **Kernels:** JPL DE440 planetary ephemeris (`de440s.bsp`), high-precision physical libration orientation (`moon_pa_de421_1900-2050.bpc`), lunar frames (`moon_080317.tf`, `moon_assoc_me.tf`).
+- **Coordinate Frame:** `MOON_ME` (Mean Earth / Polar Axis body-fixed selenographic frame).
+- **Aberration:** `LT+S` (Light-time and stellar aberration correction).
+- **Accuracy:** Tested against JPL Horizons with mean absolute error **$< 0.0001^\circ$** ($0.36\text{ arcseconds}$).
+- **UI Badge:** `SPICE EPHEMERIS (DE440 / MOON_ME)` in emerald green.
+- **Coverage:** Precomputed hourly datasets stored in `public/data/ephemeris/<siteId>.json` for primary mission candidates.
 
-### 5.2 Approximate Model (Fallback)
+### 5.2 Tier 2: JPL Horizons Ephemeris (Validation Baseline)
+- **Engine:** NASA JPL Solar System Dynamics (SSD) Horizons On-line Ephemeris System API.
+- **Observer Code:** `coord@301` on Moon geodetic ellipsoid.
+- **Role:** Independent gold-standard scientific benchmark used to validate SPICE outputs and furnish fallback queries.
+- **UI Badge:** `HORIZONS EPHEMERIS (JPL SSD)` in blue.
 
-- Uses **sub-solar and sub-Earth point geometry** to compute body positions.
-- Core formula for elevation `el₀` of a body with sub-body point at `(φ₀, λ₀)` as seen from site `(φ, λ)`:
+### 5.3 Tier 3: Approximate Geometric Model (Runtime Fallback)
+- **Engine:** Client-side closed-form trigonometric calculation based on sub-solar and sub-Earth points with mean orbital periods and lunar radius parallax correction.
+- **Formula:**
+  $$\sin(\text{el}_0) = \sin(\phi) \sin(\phi_0) + \cos(\phi) \cos(\phi_0) \cos(\lambda - \lambda_0)$$
+  $$\text{el} = \arcsin\left(\frac{D \sin(\text{el}_0) - R}{\sqrt{D^2 + R^2 - 2DR \sin(\text{el}_0)}}\right)$$
+- **Role:** Used automatically when evaluating custom user-entered coordinates or sites where offline SPICE datasets are pending.
+- **Accuracy:** $\sim 1^\circ \text{ to } 2^\circ$ typical error. Suitable for initial scouting, NOT for flight clearance.
+- **UI Badge:** `APPROXIMATE (GEOMETRIC MODEL)` in amber.
 
-  ```
-  sin(el₀) = sin(φ)·sin(φ₀) + cos(φ)·cos(φ₀)·cos(λ − λ₀)
-  ```
-
-- **Earth parallax correction** is applied:
-
-  ```
-  el = arcsin((D·sin(el₀) − R) / √(D² + R² − 2·D·R·sin(el₀)))
-  ```
-
-  where `R = 1 737.4 km` (lunar radius) and `D ≈ 384 400 km` (mean Earth–Moon distance).
-
-- Accuracy: **~1–2°** compared to SPICE. This is adequate for screening and planning but **not suitable for engineering decisions**.
-- All results from this model are tagged with `source = 'APPROXIMATE'`.
+### 5.4 Tier 4: Simulated Development Values (Legacy M1)
+- **Engine:** Synthetic waveforms used during initial UI scaffold testing.
+- **Role:** Completely replaced in M2 by authenticated SPICE/Horizons or Tier 3 approximate geometry.
+- **UI Badge:** `SIMULATED (M1 PLACEHOLDER)` in rose (flagged for replacement).
 
 ## 6. Landing Site Coordinates
 

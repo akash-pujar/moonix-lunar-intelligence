@@ -136,3 +136,4 @@ export const MetricsPanel: FC<MetricsPanelProps> = ({ metrics, mode }) => {
     </div>
   );
 };
+

@@ -295,6 +295,19 @@ export const ElevationChart: FC<ElevationChartProps> = ({
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200">
             {title || (isSun ? 'Solar Elevation Timeline' : 'Direct-to-Earth Elevation Timeline')}
           </span>
+          {ephemeris?.source === 'SPICE' ? (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/40 bg-emerald-950/60 text-emerald-300">
+              SPICE DE440
+            </span>
+          ) : ephemeris?.source === 'HORIZONS' ? (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-blue-500/40 bg-blue-950/60 text-blue-300">
+              HORIZONS JPL
+            </span>
+          ) : (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-amber-500/40 bg-amber-950/60 text-amber-300">
+              APPROXIMATE MODEL
+            </span>
+          )}
         </div>
 
         {cursorPoint ? (

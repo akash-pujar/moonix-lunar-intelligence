@@ -16,7 +16,8 @@ build/
 .env.*.local
 
 # SPICE kernels (large binary files)
-pipeline/kernels/
+pipeline/kernels/*
+!pipeline/kernels/kernel_manifest.json
 *.bsp
 *.tpc
 *.tf
@@ -46,6 +47,8 @@ npm-debug.log*
 # Temp
 *.local
 .tmp/
+.chrometmp/
+m*-dashboard.png
 
 # Python
 __pycache__/

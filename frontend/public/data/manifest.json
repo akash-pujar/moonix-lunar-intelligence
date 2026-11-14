@@ -1,12 +1,45 @@
 {
-  "version": "1.0.0",
-  "generated": "2026-11-14T12:00:00Z",
+  "version": "2.0.0",
+  "generated": "2026-11-14T07:35:26Z",
   "timeRange": {
-    "start": "2026-11-01T00:00:00Z",
-    "end": "2028-12-31T23:00:00Z"
+    "start": "2027-01-01T00:00:00Z",
+    "end": "2027-06-30T23:00:00Z"
   },
   "stepSeconds": 3600,
-  "note": "Ephemeris data has not yet been generated from SPICE or Horizons. The frontend uses approximate sub-solar/sub-Earth geometry calculations as a fallback. These are labeled APPROXIMATE and carry estimated uncertainty of 1-2 degrees.",
-  "sites": []
+  "coordinateFrame": "MOON_ME",
+  "aberration": "LT+S",
+  "sites": [
+    {
+      "siteId": "shackleton-rim",
+      "name": "Shackleton Rim",
+      "ephemerisFile": "/data/ephemeris/shackleton-rim.json",
+      "horizonFile": null,
+      "source": "SPICE",
+      "quality": "nominal"
+    },
+    {
+      "siteId": "malapert-massif",
+      "name": "Malapert Massif",
+      "ephemerisFile": "/data/ephemeris/malapert-massif.json",
+      "horizonFile": null,
+      "source": "SPICE",
+      "quality": "nominal"
+    },
+    {
+      "siteId": "nobile-rim",
+      "name": "Nobile Rim",
+      "ephemerisFile": "/data/ephemeris/nobile-rim.json",
+      "horizonFile": null,
+      "source": "SPICE",
+      "quality": "nominal"
+    },
+    {
+      "siteId": "apollo-11",
+      "name": "Apollo 11 (Tranquility Base)",
+      "ephemerisFile": "/data/ephemeris/apollo-11.json",
+      "horizonFile": null,
+      "source": "SPICE",
+      "quality": "nominal"
+    }
+  ]
 }
-

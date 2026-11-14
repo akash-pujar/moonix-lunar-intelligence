@@ -165,3 +165,4 @@ export const ViabilityScore: FC<ViabilityScoreProps> = ({ viability, onWeightCha
     </div>
   );
 };
+

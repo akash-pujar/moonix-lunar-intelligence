@@ -92,17 +92,30 @@ export const SitePicker: FC<SitePickerProps> = ({
               <p className="text-slate-400 mt-1 line-clamp-2 text-[11px] leading-relaxed">
                 {currentSite.description}
               </p>
-              <div className="mt-2 flex items-center justify-between text-[10px] font-mono">
+              <div className="mt-2 flex flex-wrap gap-1.5 items-center justify-between text-[10px] font-mono">
                 <span className="text-slate-500">Ref: {currentSite.frame}</span>
-                <span
-                  className={`px-1.5 py-0.5 rounded border ${
-                    currentSite.terrainAvailability === 'available'
-                      ? 'bg-emerald-950/60 border-emerald-500/30 text-emerald-300'
-                      : 'bg-amber-950/60 border-amber-500/30 text-amber-300'
-                  }`}
-                >
-                  {currentSite.terrainAvailability === 'available' ? 'LOLA Horizon Available' : 'Flat Horizon Fallback'}
-                </span>
+                <div className="flex items-center space-x-1">
+                  <span
+                    className={`px-1.5 py-0.5 rounded border ${
+                      ['shackleton-rim', 'malapert-massif', 'nobile-rim', 'apollo-11'].includes(currentSite.id)
+                        ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
+                        : 'bg-amber-950/60 border-amber-500/30 text-amber-300'
+                    }`}
+                  >
+                    {['shackleton-rim', 'malapert-massif', 'nobile-rim', 'apollo-11'].includes(currentSite.id)
+                      ? 'SPICE DE440 Verified'
+                      : 'Approximate Ephemeris'}
+                  </span>
+                  <span
+                    className={`px-1.5 py-0.5 rounded border ${
+                      currentSite.terrainAvailability === 'available'
+                        ? 'bg-emerald-950/60 border-emerald-500/30 text-emerald-300'
+                        : 'bg-slate-800 border-slate-700 text-slate-400'
+                    }`}
+                  >
+                    {currentSite.terrainAvailability === 'available' ? 'LOLA Horizon' : 'Flat Horizon (0°)'}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -155,3 +168,4 @@ export const SitePicker: FC<SitePickerProps> = ({
     </div>
   );
 };
+

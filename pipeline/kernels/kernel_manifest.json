@@ -1,0 +1,44 @@
+[
+  {
+    "filename": "naif0012.tls",
+    "description": "Leapseconds kernel (UTC <-> TDB conversion)",
+    "size_bytes": 5257,
+    "sha256": "678e32bdb5a744117a467cd9601cd6b373f0e9bc9bbde1371d5eee39600a039b",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls"
+  },
+  {
+    "filename": "pck00011.tpc",
+    "description": "Planetary constants kernel (radii and gravitational parameters)",
+    "size_bytes": 131226,
+    "sha256": "3dff7b1dbeceaa01f25467767d3fa25816051c85d162d1edf04acb310ee28bb1",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc"
+  },
+  {
+    "filename": "moon_080317.tf",
+    "description": "Lunar frames definition kernel (defines MOON_ME and MOON_PA)",
+    "size_bytes": 21437,
+    "sha256": "78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_080317.tf"
+  },
+  {
+    "filename": "moon_assoc_me.tf",
+    "description": "Lunar frame association kernel (links Moon body 301 to MOON_ME)",
+    "size_bytes": 8468,
+    "sha256": "52c622043ce0447d575e59ee01642f1894921e68c10f934ceff065f362da6c1c",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_assoc_me.tf"
+  },
+  {
+    "filename": "moon_pa_de421_1900-2050.bpc",
+    "description": "High-precision lunar orientation binary PCK (DE421 libration)",
+    "size_bytes": 1770496,
+    "sha256": "656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc"
+  },
+  {
+    "filename": "de440s.bsp",
+    "description": "DE440 small planetary ephemeris (Sun, Earth, Moon 1950-2050)",
+    "size_bytes": 32726016,
+    "sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+    "source": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440s.bsp"
+  }
+]

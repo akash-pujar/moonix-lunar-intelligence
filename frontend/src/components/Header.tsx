@@ -40,15 +40,25 @@ export const Header: FC<HeaderProps> = ({
 
         {/* Center / Data Provenance Status */}
         <div className="hidden md:flex items-center space-x-2">
-          {isSimulated ? (
-            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-950/50 border border-amber-500/40 text-amber-300 text-xs font-mono">
-              <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
-              <span>DATA: SIMULATED (APPROXIMATE MODEL)</span>
+          {dataSource === 'SPICE' ? (
+            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-mono shadow-[0_0_12px_rgba(16,185,129,0.15)]">
+              <Cpu className="h-3.5 w-3.5 text-emerald-400" />
+              <span>SPICE EPHEMERIS (DE440 / MOON_ME)</span>
+            </div>
+          ) : dataSource === 'HORIZONS' ? (
+            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-950/60 border border-blue-500/50 text-blue-300 text-xs font-mono shadow-[0_0_12px_rgba(59,130,246,0.15)]">
+              <Cpu className="h-3.5 w-3.5 text-blue-400" />
+              <span>HORIZONS EPHEMERIS (JPL SSD)</span>
+            </div>
+          ) : isSimulated ? (
+            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-950/50 border border-rose-500/40 text-rose-300 text-xs font-mono">
+              <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
+              <span>SIMULATED (M1 PLACEHOLDER)</span>
             </div>
           ) : (
-            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/40 text-emerald-300 text-xs font-mono">
-              <Cpu className="h-3.5 w-3.5 text-emerald-400" />
-              <span>DATA: {dataSource} VALIDATED</span>
+            <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-950/50 border border-amber-500/40 text-amber-300 text-xs font-mono">
+              <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
+              <span>APPROXIMATE (GEOMETRIC MODEL)</span>
             </div>
           )}
         </div>
@@ -86,3 +96,4 @@ export const Header: FC<HeaderProps> = ({
     </header>
   );
 };
+
