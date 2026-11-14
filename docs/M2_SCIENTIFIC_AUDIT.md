@@ -184,3 +184,4 @@ powershell -ExecutionPolicy Bypass -File pipeline/test_browser_preview.ps1
 - **UI Transparency:** Confirmed (Visible `SPICE EPHEMERIS` provenance badges).
 
 **STATUS: M2 ACCEPTED**
+

@@ -35,3 +35,4 @@ for item in manifest:
 
 print("=" * 80)
 print(f"KERNEL INTEGRITY: {'ALL VERIFIED PASS' if all_ok else 'FAILURES DETECTED'}")
+

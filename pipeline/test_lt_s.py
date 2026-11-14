@@ -70,3 +70,4 @@ for target in ["SUN", "EARTH"]:
     print()
 
 sp.kclear()
+

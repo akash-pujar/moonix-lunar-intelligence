@@ -19,3 +19,4 @@ Write-Host "Screenshot captured:" (Test-Path "D:\Moonix\audit-m2-dashboard.png")
 if (Test-Path "D:\Moonix\audit-m2-dashboard.png") {
     Write-Host "Screenshot Size:" (Get-Item "D:\Moonix\audit-m2-dashboard.png").Length
 }
+

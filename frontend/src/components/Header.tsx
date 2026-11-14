@@ -1,6 +1,7 @@
 import type { FC } from 'react';
+import { Link } from 'react-router-dom';
 import type { AppMode, EphemerisSource } from '../data/types';
-import { Compass, Sparkles, Activity, ShieldAlert, Cpu } from 'lucide-react';
+import { Compass, Sparkles, Activity, ShieldAlert, Cpu, ArrowLeft } from 'lucide-react';
 
 interface HeaderProps {
   mode: AppMode;
@@ -18,9 +19,9 @@ export const Header: FC<HeaderProps> = ({
   return (
     <header className="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="h-9 w-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+        {/* Brand with Link to Landing Page */}
+        <Link to="/" className="flex items-center space-x-3 group hover:opacity-95 transition-opacity" title="Return to Landing Page">
+          <div className="h-9 w-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.25)] group-hover:border-cyan-400 transition-colors">
             <Compass className="h-5 w-5 animate-pulse" />
           </div>
           <div>
@@ -32,11 +33,15 @@ export const Header: FC<HeaderProps> = ({
                 CLPS NAV-10
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 tracking-wider uppercase font-mono">
-              Lunar Landing Site Navigator &bull; NASA Space Apps 2026
+            <p className="text-[10px] text-slate-400 tracking-wider uppercase font-mono flex items-center gap-1.5">
+              <span>Lunar Landing Site Navigator</span>
+              <span className="text-slate-600">&bull;</span>
+              <span className="text-cyan-400/80 group-hover:underline flex items-center gap-0.5">
+                <ArrowLeft className="h-2.5 w-2.5 inline" /> Overview
+              </span>
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Center / Data Provenance Status */}
         <div className="hidden md:flex items-center space-x-2">

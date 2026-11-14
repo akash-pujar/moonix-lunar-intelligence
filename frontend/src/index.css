@@ -6,6 +6,8 @@
   --color-navy-800: #1a2332;
   --color-navy-700: #243044;
   --color-navy-600: #2d3d56;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* Base styles */
