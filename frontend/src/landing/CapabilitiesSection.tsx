@@ -76,18 +76,8 @@ export function CapabilitiesSection() {
     <section
       id="capabilities"
       ref={ref}
-      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8"
-      style={{ background: '#050914' }}
+      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-[#020308]"
     >
-      {/* Subtle radial gradient centred on section */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(66,217,245,0.03) 0%, transparent 70%)',
-        }}
-      />
-
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
         <div
@@ -100,7 +90,7 @@ export function CapabilitiesSection() {
         >
           <div className="inline-flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-[#42D9F5]/40" />
-            <span className="text-[10px] font-mono text-[#42D9F5]/70 tracking-[0.2em] uppercase">Mission Capabilities</span>
+            <span className="text-[10px] font-mono text-[#42D9F5]/70 tracking-[0.2em] uppercase">Capabilities</span>
             <div className="h-px w-8 bg-[#42D9F5]/40" />
           </div>
           <h2
@@ -109,8 +99,8 @@ export function CapabilitiesSection() {
           >
             What MOONIX Analyzes
           </h2>
-          <p className="text-[#9AA9BF] text-sm max-w-xl mx-auto leading-relaxed">
-            Four core analytical domains — each powered by precomputed SPICE ephemerides and
+          <p className="text-[#9AA9BF] text-sm max-w-xl mx-auto leading-relaxed font-light">
+            Five core analytical domains — each powered by precomputed SPICE ephemerides and
             interactive visualization.
           </p>
         </div>
@@ -122,26 +112,23 @@ export function CapabilitiesSection() {
             return (
               <div
                 key={cap.label}
-                className="group relative p-7 rounded border bg-[#101B2D]/70 hover:bg-[#101B2D] transition-all duration-300 cursor-default"
+                className="group relative p-7 rounded-2xl border bg-[#05070D]/90 border-white/10 hover:border-[#42D9F5]/40 transition-all duration-300 cursor-default"
                 style={{
-                  borderColor: 'rgba(66,217,245,0.1)',
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(24px)',
                   transition: `opacity 0.8s ease ${0.1 + i * 0.1}s, transform 0.8s ease ${0.1 + i * 0.1}s, background 0.3s ease, box-shadow 0.3s ease`,
                 }}
                 onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 40px ${cap.accent}12, inset 0 0 40px ${cap.accent}04`
-                  ;(e.currentTarget as HTMLDivElement).style.borderColor = `${cap.accent}30`
+                  ;(e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 35px ${cap.accent}10, inset 0 0 25px ${cap.accent}03`
                 }}
                 onMouseLeave={(e) => {
                   ;(e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
-                  ;(e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(66,217,245,0.1)'
                 }}
               >
                 {/* Icon + tag row */}
                 <div className="flex items-start justify-between mb-4">
                   <div
-                    className="w-10 h-10 rounded flex items-center justify-center"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: `${cap.accent}15`, border: `1px solid ${cap.accent}30` }}
                   >
                     <Icon className="h-5 w-5" style={{ color: cap.accent }} />
@@ -158,7 +145,7 @@ export function CapabilitiesSection() {
                 <h3 className="text-[#F4F7FC] font-semibold text-base mb-3 tracking-wide">{cap.label}</h3>
 
                 {/* Description */}
-                <p className="text-[#9AA9BF] text-sm leading-relaxed mb-5">{cap.description}</p>
+                <p className="text-[#9AA9BF] text-sm leading-relaxed mb-5 font-light">{cap.description}</p>
 
                 {/* Details list */}
                 <ul className="space-y-1.5">
@@ -186,4 +173,3 @@ export function CapabilitiesSection() {
     </section>
   )
 }
-

@@ -148,3 +148,4 @@ When a site is selected, `LunarGlobe.tsx` computes smooth target Euler rotations
 - Technology Section: `technology-section.png` (317.2 KB)
 - Operational Dashboard (`/app?site=shackleton-rim`): `dashboard-site-shackleton.png` (183.7 KB)
 - Mobile Viewport (390px): `landing-mobile-390.png` (108.7 KB)
+

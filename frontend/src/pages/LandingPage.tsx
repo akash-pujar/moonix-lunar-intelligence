@@ -12,7 +12,7 @@ export default function LandingPage() {
   const siteId = searchParams.get('site') || 'shackleton-rim'
 
   return (
-    <div className="bg-[#050914] text-[#F4F7FC] overflow-x-hidden">
+    <div className="bg-black text-[#F4F7FC] overflow-x-hidden min-h-screen selection:bg-[#42D9F5]/20 selection:text-[#42D9F5]">
       <HeroSection />
       <MissionIntro />
       <CapabilitiesSection />
@@ -22,4 +22,3 @@ export default function LandingPage() {
     </div>
   )
 }
-

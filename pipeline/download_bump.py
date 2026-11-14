@@ -18,3 +18,4 @@ for url in candidate_urls:
         break
     except Exception as e:
         print(f"Failed {url}: {e}")
+

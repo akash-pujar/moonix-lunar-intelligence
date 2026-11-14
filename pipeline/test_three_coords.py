@@ -26,3 +26,4 @@ sites = [
 for name, lat, lon in sites:
     x, y, z = lat_lon_to_cartesian(lat, lon, 100.0)
     print(f"{name:<20}: Lat={lat:8.3f}°, Lon={lon:8.3f}° => x={x:7.2f}, y={y:7.2f}, z={z:7.2f}")
+

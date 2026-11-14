@@ -1,6 +1,7 @@
-// LunarGlobe.tsx — High-fidelity WebGL 3D Moon with Three.js
+// LunarGlobe.tsx — High-fidelity WebGL 3D Moon with Three.js (Enlarged 560–680px visual anchor)
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { MOON_ALBEDO_DATA_URI } from './moonAlbedoData';
 
 export interface SiteMarkerData {
   id: string;
@@ -24,7 +25,7 @@ export function latLonToVector3(latDeg: number, lonDeg: number, radius: number):
   const lonRad = (lonDeg * Math.PI) / 180;
 
   // In standard Three.js texture mapping on SphereGeometry:
-  // y is North/South axis (+y is North Pole, -y is South Pole)
+  // +y is North Pole, -y is South Pole
   // At lon=0, z = +R, x = 0 (Prime Meridian faces +Z)
   // At lon=+90 (East), x = +R, z = 0
   const y = radius * Math.sin(latRad);
@@ -36,26 +37,24 @@ export function latLonToVector3(latDeg: number, lonDeg: number, radius: number):
 
 // Target rotations for each candidate site to bring it into optimal viewing angle
 function getTargetRotationForSite(lat: number, lon: number): { x: number; y: number } {
-  // If site is in polar region (lat < -60°), tilt the pole towards the camera by ~45°
-  // and align longitude with the viewer
   const lonRad = (lon * Math.PI) / 180;
   if (lat < -60) {
-    // South Pole region: tilt down so south pole faces camera
+    // South Pole region: tilt down so south pole craters face camera at ~48 degrees
     return {
-      x: 0.85, // ~48 degrees tilt to view south polar craters
+      x: 0.84,
       y: -lonRad,
     };
   } else if (lat > 60) {
     // North pole region
     return {
-      x: -0.85,
+      x: -0.84,
       y: -lonRad,
     };
   } else {
     // Equatorial / mid-latitude: face directly at site
     const latRad = (lat * Math.PI) / 180;
     return {
-      x: -latRad * 0.5,
+      x: -latRad * 0.45,
       y: -lonRad,
     };
   }
@@ -69,12 +68,12 @@ export function LunarGlobe({
 }: LunarGlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [webGLSupported, setWebGLSupported] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isHoveringMarker, setIsHoveringMarker] = useState<string | null>(null);
+  const [, setIsLoaded] = useState(false);
+  const [, setIsHoveringMarker] = useState<string | null>(null);
 
   // References for animation and interaction
-  const targetRotationRef = useRef({ x: 0.85, y: 0 }); // Default for Shackleton Rim
-  const currentRotationRef = useRef({ x: 0.85, y: 0 });
+  const targetRotationRef = useRef({ x: 0.84, y: 0 }); // Default for Shackleton Rim
+  const currentRotationRef = useRef({ x: 0.84, y: 0 });
   const isDraggingRef = useRef(false);
   const previousPointerRef = useRef({ x: 0, y: 0 });
   const autoRotateRef = useRef(true);
@@ -116,10 +115,10 @@ export function LunarGlobe({
     const width = container.clientWidth || 600;
     const height = container.clientHeight || 600;
 
-    // 2. Scene setup
+    // 2. Scene setup with transparent background for pure black space integration
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 7.5);
+    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+    camera.position.set(0, 0, 7.0);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -129,70 +128,37 @@ export function LunarGlobe({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.12;
     container.appendChild(renderer.domElement);
 
-    // 3. Moon sphere setup
-    const MOON_RADIUS = 2.45;
+    // ── 3. Moon Sphere Setup (Commanding 560–680px diameter) ──
+    const MOON_RADIUS = 2.15;
     const moonGroup = new THREE.Group();
     scene.add(moonGroup);
 
     const moonGeometry = new THREE.SphereGeometry(MOON_RADIUS, 64, 64);
 
-    // Procedural fallback canvas texture in case texture load is delayed or fails
-    const createProceduralMoonCanvas = () => {
-      const c = document.createElement('canvas');
-      c.width = 512;
-      c.height = 256;
-      const ctx = c.getContext('2d')!;
-      // Base highlands color
-      ctx.fillStyle = '#b0b5be';
-      ctx.fillRect(0, 0, 512, 256);
-      // Dark basaltic maria patches
-      ctx.fillStyle = '#686f7b';
-      ctx.beginPath();
-      ctx.ellipse(180, 110, 80, 50, 0.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(260, 120, 60, 40, -0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(320, 100, 35, 30, 0, 0, Math.PI * 2);
-      ctx.fill();
-      return new THREE.CanvasTexture(c);
-    };
-
+    // Load authentic NASA LROC equirectangular texture synchronously from embedded data URI
     const textureLoader = new THREE.TextureLoader();
-    const moonMaterial = new THREE.MeshStandardMaterial({
-      map: createProceduralMoonCanvas(),
-      roughness: 0.94,
-      metalness: 0.04,
-      bumpScale: 0.03,
+    const texture = textureLoader.load(MOON_ALBEDO_DATA_URI, () => {
+      setIsLoaded(true);
     });
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
 
-    // Load authentic NASA LROC equirectangular texture
-    textureLoader.load(
-      '/textures/moon_albedo.jpg',
-      (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        moonMaterial.map = texture;
-        moonMaterial.bumpMap = texture;
-        moonMaterial.needsUpdate = true;
-        setIsLoaded(true);
-      },
-      undefined,
-      () => {
-        // Fallback kept
-        setIsLoaded(true);
-      }
-    );
+    const moonMaterial = new THREE.MeshStandardMaterial({
+      map: texture,
+      bumpMap: texture,
+      bumpScale: 0.052,
+      roughness: 0.90,
+      metalness: 0.01,
+    });
 
     const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
     moonGroup.add(moonMesh);
 
-    // 4. Site Markers Generation
+    // ── 4. Candidate Site Markers ──
     const markersMap = new Map<string, THREE.Group>();
     const hitMap = new Map<string, THREE.Mesh>();
 
@@ -201,12 +167,12 @@ export function LunarGlobe({
       const pos = latLonToVector3(site.latitude, site.longitude, MOON_RADIUS);
       markerGroup.position.copy(pos);
 
-      // Orient marker so its local +Y aligns with the surface normal
+      // Orient marker so local +Y aligns with surface normal
       const normal = pos.clone().normalize();
       markerGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
 
-      // Surface ring
-      const ringGeo = new THREE.RingGeometry(0.04, 0.07, 32);
+      // Outer glow pulse ring
+      const ringGeo = new THREE.RingGeometry(0.040, 0.075, 32);
       ringGeo.rotateX(-Math.PI / 2);
       const ringMat = new THREE.MeshBasicMaterial({
         color: 0x42d9f5,
@@ -215,21 +181,21 @@ export function LunarGlobe({
         opacity: 0.85,
       });
       const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.position.y = 0.005; // slightly above surface
+      ringMesh.position.y = 0.006;
       markerGroup.add(ringMesh);
 
-      // Core center dot
-      const dotGeo = new THREE.SphereGeometry(0.03, 16, 16);
+      // Core beacon dot
+      const dotGeo = new THREE.SphereGeometry(0.028, 16, 16);
       const dotMat = new THREE.MeshBasicMaterial({ color: 0x42d9f5 });
       const dotMesh = new THREE.Mesh(dotGeo, dotMat);
-      dotMesh.position.y = 0.02;
+      dotMesh.position.y = 0.022;
       markerGroup.add(dotMesh);
 
-      // Hit sphere for easy clicking/tapping (invisible)
+      // Invisible hit sphere for frictionless raycast clicking
       const hitGeo = new THREE.SphereGeometry(0.18, 12, 12);
       const hitMat = new THREE.MeshBasicMaterial({ visible: false });
       const hitSphere = new THREE.Mesh(hitGeo, hitMat);
-      hitSphere.position.y = 0.05;
+      hitSphere.position.y = 0.04;
       hitSphere.userData = { siteId: site.id };
       markerGroup.add(hitSphere);
 
@@ -241,20 +207,22 @@ export function LunarGlobe({
     markerMeshesRef.current = markersMap;
     hitSpheresRef.current = hitMap;
 
-    // 5. Lighting (Authentic neutral directional sunlight + faint cosmic ambient)
-    const sunLight = new THREE.DirectionalLight(0xfff5ea, 2.4);
-    sunLight.position.set(6, 2.5, 4.5);
+    // ── 5. Natural Directional Sunlight (Upper Right) & Lunar Terminator ──
+    // Directional Sunlight: upper right, creates deep physical shadows in craters
+    const sunLight = new THREE.DirectionalLight(0xfff5ea, 3.4);
+    sunLight.position.set(8.5, 3.2, 4.5);
     scene.add(sunLight);
 
-    const ambientLight = new THREE.AmbientLight(0x0c1424, 0.25);
+    // Subtle Natural Lunar Rim Light (gives crisp limb silhouette against deep black space)
+    const rimLight = new THREE.DirectionalLight(0xdbe6f2, 0.42);
+    rimLight.position.set(-8.5, -1.5, -4.0);
+    scene.add(rimLight);
+
+    // Subtle Dark-Side Ambient (preserves spherical perception without artificial blue haze)
+    const ambientLight = new THREE.AmbientLight(0x0a0d14, 0.15);
     scene.add(ambientLight);
 
-    // Subtle Earthshine fill light (soft blue from opposite angle)
-    const earthshine = new THREE.DirectionalLight(0x4287f5, 0.15);
-    earthshine.position.set(-6, -2, -2);
-    scene.add(earthshine);
-
-    // 6. Raycasting for marker interaction
+    // ── 6. Raycasting & Interaction ──
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -272,7 +240,6 @@ export function LunarGlobe({
       return null;
     };
 
-    // Pointer events for drag rotation and marker selection
     let dragDistance = 0;
 
     const onPointerDown = (e: PointerEvent) => {
@@ -288,16 +255,15 @@ export function LunarGlobe({
         const deltaY = e.clientY - previousPointerRef.current.y;
         dragDistance += Math.hypot(deltaX, deltaY);
 
-        targetRotationRef.current.y += deltaX * 0.007;
+        targetRotationRef.current.y += deltaX * 0.0055;
         targetRotationRef.current.x = Math.max(
-          -1.4,
-          Math.min(1.4, targetRotationRef.current.x + deltaY * 0.007)
+          -1.35,
+          Math.min(1.35, targetRotationRef.current.x + deltaY * 0.0055)
         );
 
         previousPointerRef.current = { x: e.clientX, y: e.clientY };
         lastInteractionTimeRef.current = Date.now();
       } else {
-        // Hover test
         const hitId = getRaycastHit(e.clientX, e.clientY);
         setIsHoveringMarker(hitId);
         container.style.cursor = hitId ? 'pointer' : 'grab';
@@ -305,13 +271,10 @@ export function LunarGlobe({
     };
 
     const onPointerUp = (e: PointerEvent) => {
-      if (isDraggingRef.current) {
-        if (dragDistance < 6) {
-          // It was a click, test for marker
-          const hitId = getRaycastHit(e.clientX, e.clientY);
-          if (hitId) {
-            onSelectSite(hitId);
-          }
+      if (isDraggingRef.current && dragDistance < 6) {
+        const hitId = getRaycastHit(e.clientX, e.clientY);
+        if (hitId) {
+          onSelectSite(hitId);
         }
       }
       isDraggingRef.current = false;
@@ -323,7 +286,7 @@ export function LunarGlobe({
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
 
-    // 7. Resize handler
+    // ── 7. Resize Handler ──
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth || 600;
@@ -336,18 +299,18 @@ export function LunarGlobe({
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
 
-    // 8. Animation loop
+    // ── 8. Animation Loop ──
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Gentle auto-rotation if idle and reduced motion is false
+      // Very slow, serene auto-rotation when idle
       const timeSinceInteraction = Date.now() - lastInteractionTimeRef.current;
-      if (!prefersReducedMotion && autoRotateRef.current && timeSinceInteraction > 3500) {
-        targetRotationRef.current.y += 0.0008;
+      if (!prefersReducedMotion && autoRotateRef.current && timeSinceInteraction > 3000) {
+        targetRotationRef.current.y += 0.0004;
       }
 
       // Smooth lerp to target rotation
@@ -359,7 +322,7 @@ export function LunarGlobe({
       moonGroup.rotation.x = currentRotationRef.current.x;
       moonGroup.rotation.y = currentRotationRef.current.y;
 
-      // Animate active marker pulse
+      // Animate site marker states
       markersMap.forEach((group, siteId) => {
         const isSelected = siteId === selectedSiteId;
         const ring = group.children[0] as THREE.Mesh;
@@ -369,13 +332,13 @@ export function LunarGlobe({
           const mat = ring.material as THREE.MeshBasicMaterial;
           if (isSelected) {
             mat.color.setHex(0x42d9f5);
-            const scale = 1 + Math.sin(elapsedTime * 4) * 0.22;
+            const scale = 1.05 + Math.sin(elapsedTime * 3.5) * 0.22;
             ring.scale.set(scale, scale, scale);
             mat.opacity = 0.95;
           } else {
             mat.color.setHex(0x69afff);
             ring.scale.set(1, 1, 1);
-            mat.opacity = 0.5;
+            mat.opacity = 0.55;
           }
         }
 
@@ -390,34 +353,32 @@ export function LunarGlobe({
 
     animate();
 
-    // 9. Cleanup on unmount
+    // ── 9. Cleanup ──
     return () => {
       cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
       domElement.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
+      resizeObserver.disconnect();
 
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
       moonGeometry.dispose();
       moonMaterial.dispose();
       renderer.dispose();
-      if (container.contains(domElement)) {
-        container.removeChild(domElement);
-      }
     };
   }, [sites, selectedSiteId, onSelectSite, prefersReducedMotion]);
 
   if (!webGLSupported) {
     return (
-      <div className={`relative flex items-center justify-center p-8 bg-slate-900/40 rounded-2xl border border-cyan-500/20 ${className}`}>
-        <div className="text-center space-y-4">
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-tr from-slate-800 via-slate-700 to-slate-500 border border-cyan-400/30 flex items-center justify-center shadow-lg shadow-cyan-500/10">
-            <span className="text-xs font-mono text-cyan-300">MOON (3D)</span>
-          </div>
-          <p className="text-xs font-mono text-slate-400 max-w-xs">
-            WebGL is not active in this browser. You can still select landing sites using the interactive site buttons.
-          </p>
+      <div
+        className={`flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#03060E]/90 text-center p-6 ${className}`}
+      >
+        <div className="w-48 h-48 rounded-full bg-slate-800 border-2 border-slate-600 mb-4 flex items-center justify-center text-slate-400 font-mono text-xs">
+          [WebGL Unavailable]
         </div>
+        <p className="text-xs text-[#9AA9BF]">3D acceleration disabled in your browser.</p>
       </div>
     );
   }
@@ -425,27 +386,9 @@ export function LunarGlobe({
   return (
     <div
       ref={containerRef}
-      className={`relative select-none touch-none ${className}`}
-      aria-label="Interactive 3D Moon: Drag to rotate, click site markers to inspect landing candidate locations"
-    >
-      {/* Loading state indicator */}
-      {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400/80 bg-slate-950/80 px-3 py-1.5 rounded-full border border-cyan-500/20 backdrop-blur">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>INITIALIZING 3D LUNAR SPHERE...</span>
-          </div>
-        </div>
-      )}
-
-      {/* Marker hover tooltip */}
-      {isHoveringMarker && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-          <div className="px-3 py-1 bg-slate-950/90 border border-cyan-500/40 rounded-full text-[11px] font-mono text-cyan-300 shadow-lg shadow-cyan-500/20 backdrop-blur">
-            Click to focus: {sites.find((s) => s.id === isHoveringMarker)?.name}
-          </div>
-        </div>
-      )}
-    </div>
+      className={`relative cursor-grab active:cursor-grabbing ${className}`}
+      role="region"
+      aria-label="Interactive 3D Moon Globe"
+    />
   );
 }

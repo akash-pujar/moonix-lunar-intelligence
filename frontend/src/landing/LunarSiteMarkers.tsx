@@ -34,7 +34,7 @@ export const LunarSiteMarkers: FC<LunarSiteMarkersProps> = ({
             className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono transition-all duration-200 border whitespace-nowrap cursor-pointer ${
               isSelected
                 ? 'bg-[#42D9F5]/20 border-[#42D9F5] text-[#F4F7FC] shadow-md shadow-cyan-500/20'
-                : 'bg-[#101B2D]/60 border-slate-700/60 text-[#9AA9BF] hover:text-[#F4F7FC] hover:border-[#42D9F5]/40'
+                : 'bg-black/60 border-white/10 text-[#9AA9BF] hover:text-[#F4F7FC] hover:border-[#42D9F5]/40'
             }`}
           >
             <span
@@ -43,7 +43,7 @@ export const LunarSiteMarkers: FC<LunarSiteMarkersProps> = ({
               }`}
             />
             <span>{site.name}</span>
-            <span className="text-[10px] text-[#9AA9BF]/50">
+            <span className="text-[10px] text-white/40">
               ({site.latitude < 0 ? `${Math.abs(site.latitude).toFixed(1)}°S` : `${site.latitude.toFixed(1)}°N`})
             </span>
           </button>

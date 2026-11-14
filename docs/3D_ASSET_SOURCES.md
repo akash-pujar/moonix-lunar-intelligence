@@ -41,3 +41,4 @@ In environments where external network fetching is restricted or WebGL cannot lo
   The texture map on the 3D globe is solely a **visual and spatial orientation reference**.
 - **Topographic Terrain Separation:**  
   Local terrain obstruction, line-of-sight elevation, and horizon profile analysis are calculated separately using the Python SPICE ephemeris pipeline and LOLA DEM products. The visual globe texture is never used as elevation ground truth for mission navigation decisions.
+

@@ -42,24 +42,24 @@ export function MissionCTA({ selectedSiteId }: MissionCTAProps) {
   return (
     <section
       ref={ref}
-      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 text-center overflow-hidden"
+      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 text-center overflow-hidden border-t border-white/5 bg-black"
       style={{
-        background: 'radial-gradient(ellipse 90% 80% at 50% 90%, rgba(66,217,245,0.08) 0%, #050914 70%)',
+        background: 'radial-gradient(ellipse 90% 80% at 50% 90%, rgba(66,217,245,0.04) 0%, #000000 70%)',
       }}
     >
       {/* Background orbital rings decoration */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none opacity-20"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none opacity-15"
         aria-hidden="true"
       >
-        <div className="w-full h-full rounded-full border border-[#42D9F5]/30 animate-pulse" />
-        <div className="absolute inset-12 rounded-full border border-[#69AFFF]/20" />
-        <div className="absolute inset-28 rounded-full border border-[#FFB547]/15" />
+        <div className="w-full h-full rounded-full border border-white/10" />
+        <div className="absolute inset-16 rounded-full border border-[#42D9F5]/20 animate-pulse" />
+        <div className="absolute inset-32 rounded-full border border-white/5" />
       </div>
 
       <div className="max-w-3xl mx-auto relative z-10">
         <div
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#42D9F5]/30 bg-[#42D9F5]/10 text-[#42D9F5] text-xs font-mono tracking-widest uppercase mb-8"
+          className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#42D9F5]/30 bg-[#42D9F5]/5 text-[#42D9F5] text-xs font-mono tracking-widest uppercase mb-8"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(12px)',
@@ -67,7 +67,7 @@ export function MissionCTA({ selectedSiteId }: MissionCTAProps) {
           }}
         >
           <Rocket className="h-3.5 w-3.5" />
-          <span>Ready For Flight Planning</span>
+          <span>Flight Planning Readiness</span>
         </div>
 
         <h2
@@ -84,7 +84,7 @@ export function MissionCTA({ selectedSiteId }: MissionCTAProps) {
         </h2>
 
         <p
-          className="text-base sm:text-lg text-[#9AA9BF] leading-relaxed mb-10 max-w-xl mx-auto font-light"
+          className="text-base sm:text-lg text-[#C4D1E2] leading-relaxed mb-10 max-w-xl mx-auto font-light"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(16px)',
@@ -103,18 +103,17 @@ export function MissionCTA({ selectedSiteId }: MissionCTAProps) {
         >
           <button
             onClick={handleOpenPlanner}
-            className="group inline-flex items-center gap-3 px-9 py-4 text-xs font-mono font-semibold text-[#050914] bg-[#42D9F5] hover:bg-[#5ee4f8] rounded-full transition-all duration-200 shadow-2xl shadow-cyan-500/30 tracking-widest cursor-pointer"
+            className="group inline-flex items-center gap-3 px-9 py-4 text-xs font-mono font-semibold text-[#02050E] bg-[#42D9F5] hover:bg-[#5ee4f8] rounded-full transition-all duration-200 shadow-2xl shadow-cyan-500/30 tracking-widest cursor-pointer"
           >
-            OPEN MISSION PLANNER
+            <span>LAUNCH MISSION PLANNER</span>
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
-        <div className="mt-8 text-[11px] font-mono text-[#9AA9BF]/50">
+        <div className="mt-8 text-[11px] font-mono text-white/40">
           Client-side execution &bull; 100% offline capable after initial load
         </div>
       </div>
     </section>
   )
 }
-

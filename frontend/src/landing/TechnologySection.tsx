@@ -105,8 +105,8 @@ export function TechnologySection() {
     <section
       id="technology"
       ref={ref}
-      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8"
-      style={{ background: 'linear-gradient(to bottom, #050914 0%, #0A1222 50%, #050914 100%)' }}
+      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 border-t border-white/5"
+      style={{ background: 'linear-gradient(to bottom, #020308 0%, #05070D 50%, #000000 100%)' }}
     >
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
@@ -129,7 +129,7 @@ export function TechnologySection() {
           >
             Built on Rigorous Astrodynamics
           </h2>
-          <p className="text-[#9AA9BF] text-sm max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[#9AA9BF] text-sm max-w-2xl mx-auto leading-relaxed font-light">
             MOONIX eliminates speculative approximations by combining NASA NAIF SPICE planetary kernels with independent JPL Horizons cross-validation and air-gapped static data delivery.
           </p>
         </div>
@@ -141,7 +141,7 @@ export function TechnologySection() {
             return (
               <div
                 key={item.title}
-                className="p-6 rounded border bg-[#101B2D]/60 border-[#42D9F5]/10 hover:border-[#42D9F5]/30 transition-all duration-300"
+                className="p-6 rounded-2xl border bg-[#05070D]/90 border-white/10 hover:border-[#42D9F5]/40 transition-all duration-300"
                 style={{
                   opacity: visible ? 1 : 0,
                   transform: visible ? 'translateY(0)' : 'translateY(20px)',
@@ -149,7 +149,7 @@ export function TechnologySection() {
                 }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-9 h-9 rounded flex items-center justify-center bg-[#42D9F5]/10 border border-[#42D9F5]/20 text-[#42D9F5]">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#42D9F5]/10 border border-[#42D9F5]/20 text-[#42D9F5]">
                     <Icon className="h-4 w-4" />
                   </div>
                   <span className="text-[9px] font-mono tracking-wider text-[#42D9F5]/80 bg-[#42D9F5]/5 border border-[#42D9F5]/20 px-2 py-0.5 rounded">
@@ -164,7 +164,7 @@ export function TechnologySection() {
 
           {/* Provenance Tier Card */}
           <div
-            className="p-6 rounded border bg-[#101B2D]/60 border-[#42D9F5]/10 hover:border-[#42D9F5]/30 transition-all duration-300"
+            className="p-6 rounded-2xl border bg-[#05070D]/90 border-white/10 hover:border-[#42D9F5]/40 transition-all duration-300"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? 'translateY(0)' : 'translateY(20px)',
@@ -199,14 +199,14 @@ export function TechnologySection() {
 
         {/* 4 Demonstration Sites Showcase */}
         <div
-          className="border border-[#42D9F5]/15 rounded-xl p-6 sm:p-8 bg-[#0A1222]/80 backdrop-blur"
+          className="border border-white/10 rounded-2xl p-6 sm:p-8 bg-[#03060E]/90 backdrop-blur-xl"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s',
           }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#42D9F5]/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
             <div>
               <div className="text-[10px] font-mono text-[#42D9F5] tracking-[0.2em] uppercase mb-1">
                 Phase 1 Verified Baseline
@@ -227,7 +227,7 @@ export function TechnologySection() {
             {DEMO_SITES.map((site) => (
               <div
                 key={site.id}
-                className="p-4 rounded border border-[#42D9F5]/10 bg-[#101B2D]/70 space-y-2 hover:border-[#42D9F5]/30 transition-all"
+                className="p-4 rounded-xl border border-white/8 bg-black/60 space-y-2 hover:border-[#42D9F5]/40 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-[#F4F7FC]">{site.name}</span>
@@ -240,11 +240,11 @@ export function TechnologySection() {
                 <div className="text-[10px] text-[#9AA9BF] font-light leading-snug">
                   {site.mission}
                 </div>
-                <div className="pt-2 flex items-center justify-between text-[9px] font-mono border-t border-slate-800">
+                <div className="pt-2 flex items-center justify-between text-[9px] font-mono border-t border-white/8">
                   <span className="text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.5 rounded">
                     {site.provenance}
                   </span>
-                  <span className="text-[#9AA9BF]/50">4,344 pts</span>
+                  <span className="text-white/40">4,344 pts</span>
                 </div>
               </div>
             ))}
@@ -258,4 +258,3 @@ export function TechnologySection() {
     </section>
   )
 }
-

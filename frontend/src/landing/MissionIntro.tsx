@@ -22,15 +22,15 @@ export function MissionIntro() {
     <section
       id="mission"
       ref={ref}
-      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8"
-      style={{ background: 'linear-gradient(to bottom, #0A1222 0%, #050914 100%)' }}
+      className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 border-t border-white/5"
+      style={{ background: 'linear-gradient(to bottom, #000000 0%, #020308 50%, #05070D 100%)' }}
     >
       {/* Background grid */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-25"
+        className="absolute inset-0 pointer-events-none opacity-20"
         aria-hidden="true"
         style={{
-          backgroundImage: 'linear-gradient(rgba(66,217,245,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(66,217,245,0.05) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }}
       />
@@ -46,7 +46,7 @@ export function MissionIntro() {
           }}
         >
           <div className="h-px flex-1 max-w-8 bg-[#42D9F5]/40" />
-          <span className="text-[10px] font-mono text-[#42D9F5]/70 tracking-[0.2em] uppercase">Mission Overview</span>
+          <span className="text-[10px] font-mono text-[#42D9F5]/70 tracking-[0.2em] uppercase">Mission Context</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -66,7 +66,7 @@ export function MissionIntro() {
               <span style={{ fontStyle: 'italic', color: '#42D9F5' }}>Intelligence.</span>
             </h2>
             <div className="h-px w-16 bg-[#42D9F5]/40 mb-6" />
-            <p className="text-[#9AA9BF] leading-relaxed text-base">
+            <p className="text-[#9AA9BF] leading-relaxed text-base font-light">
               Mission planners need to understand how solar illumination, Earth visibility and
               terrain conditions change at different lunar locations and times.
             </p>
@@ -80,7 +80,7 @@ export function MissionIntro() {
               transition: 'opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s',
             }}
           >
-            <p className="text-[#9AA9BF] leading-relaxed text-sm mb-8">
+            <p className="text-[#9AA9BF] leading-relaxed text-sm mb-8 font-light">
               MOONIX brings these mission considerations into one interactive exploration experience.
               Select a lunar landing site, choose a mission date, and immediately see how
               solar illumination windows, direct-to-Earth communications and viability metrics
@@ -97,8 +97,7 @@ export function MissionIntro() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="p-4 rounded border border-[#42D9F5]/10 bg-[#101B2D]/60 backdrop-blur"
-                  style={{ borderColor: `${s.accent}18` }}
+                  className="p-4 rounded-xl border border-white/10 bg-[#03060E]/85 backdrop-blur-md"
                 >
                   <div
                     className="text-xl font-mono font-semibold mb-1"
@@ -112,7 +111,7 @@ export function MissionIntro() {
             </div>
 
             {/* Important disclaimer */}
-            <p className="mt-6 text-[11px] font-mono text-[#9AA9BF]/50 leading-relaxed border-l-2 border-[#9AA9BF]/15 pl-3">
+            <p className="mt-6 text-[11px] font-mono text-[#9AA9BF]/50 leading-relaxed border-l-2 border-white/15 pl-3">
               MOONIX is a research and exploration prototype built for the NASA Space Apps Challenge 2026.
               It is not an official NASA product and is not approved for operational flight use.
             </p>
@@ -122,4 +121,3 @@ export function MissionIntro() {
     </section>
   )
 }
-

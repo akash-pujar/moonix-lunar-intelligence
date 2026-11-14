@@ -1,57 +1,62 @@
-$proc = Start-Process -FilePath "node.exe" -ArgumentList "D:\Moonix\frontend\node_modules\vite\bin\vite.js", "preview", "--port", "4173", "--host", "127.0.0.1" -WorkingDirectory "D:\Moonix\frontend" -PassThru
-Start-Sleep -Seconds 3
-
-try {
-    $res1 = Invoke-WebRequest -Uri "http://127.0.0.1:4173/" -UseBasicParsing -TimeoutSec 5
-    Write-Host "Landing root status:" $res1.StatusCode "Length:" $res1.Content.Length
-    $res2 = Invoke-WebRequest -Uri "http://127.0.0.1:4173/app?site=shackleton-rim" -UseBasicParsing -TimeoutSec 5
-    Write-Host "App status:" $res2.StatusCode "Length:" $res2.Content.Length
-} catch {
-    Write-Host "HTTP error:" $_
-}
-
+﻿# capture_3d_lunar_suite.ps1 — Capture all refined 3D Moon and section screenshots with virtual time budget
 $chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 $artDir = "C:\Users\akash\.gemini\antigravity\brain\9dd44fba-6ccf-4f1a-86f2-eab38f471232"
+$baseUrl = "http://localhost:5173"
+
+Write-Host "Verifying dev server connectivity on $baseUrl..."
+try {
+    $res = Invoke-WebRequest -Uri "$baseUrl/" -UseBasicParsing -TimeoutSec 5
+    Write-Host "Dev server responded: $($res.StatusCode)"
+} catch {
+    Write-Host "Warning: dev server check failed: $_"
+}
 
 # 1. Desktop Hero (Shackleton default)
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=6000 --screenshot="$artDir\3d-hero-desktop.png" "http://127.0.0.1:4173/?site=shackleton-rim"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 1. 3d-hero-desktop..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=5000 --screenshot="$artDir\3d-hero-desktop.png" "$baseUrl/?site=shackleton-rim"
+Start-Sleep -Milliseconds 800
 
 # 2. 3D Moon with Shackleton Selected
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=6000 --screenshot="$artDir\3d-moon-shackleton.png" "http://127.0.0.1:4173/?site=shackleton-rim"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 2. 3d-moon-shackleton..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=5000 --screenshot="$artDir\3d-moon-shackleton.png" "$baseUrl/?site=shackleton-rim"
+Start-Sleep -Milliseconds 800
 
 # 3. 3D Moon with Malapert Selected
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=6000 --screenshot="$artDir\3d-moon-malapert.png" "http://127.0.0.1:4173/?site=malapert-massif"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 3. 3d-moon-malapert..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=5000 --screenshot="$artDir\3d-moon-malapert.png" "$baseUrl/?site=malapert-massif"
+Start-Sleep -Milliseconds 800
 
 # 4. 3D Moon with Nobile Selected
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=6000 --screenshot="$artDir\3d-moon-nobile.png" "http://127.0.0.1:4173/?site=nobile-rim"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 4. 3d-moon-nobile..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=5000 --screenshot="$artDir\3d-moon-nobile.png" "$baseUrl/?site=nobile-rim"
+Start-Sleep -Milliseconds 800
 
 # 5. 3D Moon with Apollo 11 Selected
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=6000 --screenshot="$artDir\3d-moon-apollo11.png" "http://127.0.0.1:4173/?site=apollo-11"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 5. 3d-moon-apollo11..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,950 --virtual-time-budget=5000 --screenshot="$artDir\3d-moon-apollo11.png" "$baseUrl/?site=apollo-11"
+Start-Sleep -Milliseconds 800
 
 # 6. Capabilities Section
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=5000 --screenshot="$artDir\capabilities-section.png" "http://127.0.0.1:4173/#capabilities"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 6. capabilities-section..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=5000 --screenshot="$artDir\capabilities-section.png" "$baseUrl/#capabilities"
+Start-Sleep -Milliseconds 800
 
 # 7. Technology Section
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=5000 --screenshot="$artDir\technology-section.png" "http://127.0.0.1:4173/#technology"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 7. technology-section..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=5000 --screenshot="$artDir\technology-section.png" "$baseUrl/#technology"
+Start-Sleep -Milliseconds 800
 
 # 8. Existing Mission Dashboard at /app?site=shackleton-rim
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=6000 --screenshot="$artDir\dashboard-site-shackleton.png" "http://127.0.0.1:4173/app?site=shackleton-rim"
-Start-Sleep -Seconds 1
+Write-Host "Capturing 8. dashboard-site-shackleton..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=1440,1100 --virtual-time-budget=6000 --screenshot="$artDir\dashboard-site-shackleton.png" "$baseUrl/app?site=shackleton-rim"
+Start-Sleep -Milliseconds 800
 
-# 9. Mobile Landing Page
-& $chrome --headless=new --disable-gpu --no-sandbox --window-size=390,844 --virtual-time-budget=5000 --screenshot="$artDir\landing-mobile-390.png" "http://127.0.0.1:4173/"
-Start-Sleep -Seconds 1
+# 9. Mobile Landing Page Viewport
+Write-Host "Capturing 9. landing-mobile-390..."
+& $chrome --headless=new --disable-gpu --no-sandbox --window-size=390,844 --virtual-time-budget=5000 --screenshot="$artDir\landing-mobile-390.png" "$baseUrl/?site=shackleton-rim"
+Start-Sleep -Milliseconds 800
 
-Stop-Process -Id $proc.Id -Force
-
-Write-Host "=== 3D SCREENSHOT SUITE VERIFICATION ==="
+Write-Host "=== 3D SCREENSHOT SUITE COMPLETED ==="
 $files = @(
     "3d-hero-desktop.png",
     "3d-moon-shackleton.png",

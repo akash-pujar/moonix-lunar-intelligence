@@ -12,3 +12,4 @@ Write-Host "Mobile capture status:" (Test-Path "$artDir\landing-mobile-390.png")
 if (Test-Path "$artDir\landing-mobile-390.png") {
     Write-Host "Mobile size:" (Get-Item "$artDir\landing-mobile-390.png").Length
 }
+

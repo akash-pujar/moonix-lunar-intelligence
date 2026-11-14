@@ -17,3 +17,4 @@ for url, target in urls:
         print(f"Saved: {target} ({target.stat().st_size / 1024:.1f} KB)")
     except Exception as e:
         print(f"Download failed for {url}: {e}")
+
