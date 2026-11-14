@@ -18,3 +18,4 @@ export function LandingFooter() {
     </footer>
   )
 }
+

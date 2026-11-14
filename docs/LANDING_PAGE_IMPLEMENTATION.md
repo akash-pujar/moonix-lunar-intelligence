@@ -110,3 +110,4 @@ frontend/src/
    Upcoming work can expand the 14-day launch-slip simulator into an interactive global surface trade matrix.
 2. **Milestone 5 (LOLA DEM Processing):**
    Topographic horizon masking using Lunar Reconnaissance Orbiter LOLA DEMs will replace the spherical geometric horizon for true crater-rim optical obscuration.
+

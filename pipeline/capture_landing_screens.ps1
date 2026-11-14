@@ -16,3 +16,4 @@ Start-Sleep -Seconds 1
 Write-Host "Hero size:" (Get-Item "$artDir\landing-hero.png").Length
 Write-Host "Dashboard size:" (Get-Item "$artDir\dashboard-app.png").Length
 Write-Host "Mobile size:" (Get-Item "$artDir\landing-mobile.png").Length
+

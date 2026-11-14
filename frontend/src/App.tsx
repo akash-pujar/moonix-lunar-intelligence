@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { LandingSite, SiteCatalogue } from './data/types';
 import { loadSiteCatalogue } from './data/loader';
 import { useMissionState } from './hooks/useMissionState';
@@ -24,6 +25,7 @@ export default function App() {
   const [catalogue, setCatalogue] = useState<SiteCatalogue | null>(null);
   const [catError, setCatError] = useState<string | null>(null);
   const [customSites, setCustomSites] = useState<LandingSite[]>([]);
+  const [searchParams] = useSearchParams();
 
   // Central mission state
   const {
@@ -37,6 +39,17 @@ export default function App() {
     toggleTerrain,
     setCursorTime,
   } = useMissionState();
+
+  // Sync site from URL query parameter (e.g. /app?site=shackleton-rim) with validation
+  useEffect(() => {
+    const siteParam = searchParams.get('site');
+    if (siteParam && catalogue) {
+      const isValid = catalogue.sites.some((s) => s.id === siteParam);
+      if (isValid && state.primarySiteId !== siteParam) {
+        setPrimarySite(siteParam);
+      }
+    }
+  }, [searchParams, catalogue, setPrimarySite, state.primarySiteId]);
 
   // Load site catalogue on mount
   useEffect(() => {

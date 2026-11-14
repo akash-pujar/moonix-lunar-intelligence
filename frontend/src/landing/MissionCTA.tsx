@@ -23,9 +23,21 @@ function useVisible(threshold = 0.15) {
   return { ref, visible }
 }
 
-export function MissionCTA() {
+interface MissionCTAProps {
+  selectedSiteId?: string;
+}
+
+export function MissionCTA({ selectedSiteId }: MissionCTAProps) {
   const navigate = useNavigate()
   const { ref, visible } = useVisible()
+
+  const handleOpenPlanner = () => {
+    if (selectedSiteId) {
+      navigate(`/app?site=${encodeURIComponent(selectedSiteId)}`)
+    } else {
+      navigate('/app')
+    }
+  }
 
   return (
     <section
@@ -79,7 +91,7 @@ export function MissionCTA() {
             transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
           }}
         >
-          Explore lunar landing opportunities through illumination, communication and mission timing.
+          Explore candidate lunar landing sites and investigate the conditions that shape mission success.
         </p>
 
         <div
@@ -90,8 +102,8 @@ export function MissionCTA() {
           }}
         >
           <button
-            onClick={() => navigate('/app')}
-            className="group inline-flex items-center gap-3 px-9 py-4 text-sm font-mono font-semibold text-[#050914] bg-[#42D9F5] hover:bg-[#5ee4f8] rounded transition-all duration-200 shadow-2xl shadow-cyan-500/30 tracking-widest cursor-pointer"
+            onClick={handleOpenPlanner}
+            className="group inline-flex items-center gap-3 px-9 py-4 text-xs font-mono font-semibold text-[#050914] bg-[#42D9F5] hover:bg-[#5ee4f8] rounded-full transition-all duration-200 shadow-2xl shadow-cyan-500/30 tracking-widest cursor-pointer"
           >
             OPEN MISSION PLANNER
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -105,3 +117,4 @@ export function MissionCTA() {
     </section>
   )
 }
+

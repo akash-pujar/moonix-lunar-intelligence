@@ -1,6 +1,6 @@
 // CapabilitiesSection.tsx — Section 3: four capability blocks
 import { useRef, useEffect, useState } from 'react'
-import { Sun, Globe, MapPin, Calendar } from 'lucide-react'
+import { Sun, Globe, MapPin, Calendar, Mountain } from 'lucide-react'
 
 function useVisible(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -20,7 +20,7 @@ const CAPABILITIES = [
   {
     icon: Sun,
     accent: '#FFB547',
-    label: 'Solar Illumination',
+    label: 'Solar Illumination Analysis',
     tag: 'SPICE EPHEMERIS',
     tagColor: '#42D9F5',
     description:
@@ -30,7 +30,7 @@ const CAPABILITIES = [
   {
     icon: Globe,
     accent: '#69AFFF',
-    label: 'Earth Visibility',
+    label: 'Earth Visibility & Direct-to-Earth',
     tag: 'SPICE EPHEMERIS',
     tagColor: '#42D9F5',
     description:
@@ -40,22 +40,32 @@ const CAPABILITIES = [
   {
     icon: MapPin,
     accent: '#42D9F5',
-    label: 'Landing Site Intelligence',
+    label: 'Landing Site Comparison',
     tag: 'VERIFIED CATALOGUE',
     tagColor: '#42D9F5',
     description:
-      'Explore known lunar candidate sites across the south pole and equatorial regions. Enter custom selenographic coordinates to analyze any lunar location. Compare two sites side-by-side in a trade study.',
+      'Explore candidate lunar locations across polar and equatorial regimes. Enter custom coordinates or conduct head-to-head trade studies comparing candidate landing sites side-by-side.',
     details: ['12-site candidate catalogue', 'Custom coordinate input', 'Side-by-side comparison mode', 'Viability Index scoring'],
   },
   {
     icon: Calendar,
     accent: '#42D9F5',
-    label: 'Mission Date Analysis',
-    tag: 'COMPUTED',
+    label: 'Mission Timing & Launch Slips',
+    tag: 'SIMULATION ENGINE',
     tagColor: '#FFB547',
     description:
-      'Investigate how mission timing and launch delays affect solar illumination and communication conditions. The launch-delay heatmap shows how a slip of up to 30 days changes site viability across the mission window.',
+      'Investigate how mission timing and launch delays affect illumination and communication conditions. The launch-delay heatmap shows how a slip of up to 30 days alters landing site viability.',
     details: ['Arbitrary UTC mission date', 'Up to 30-day slip simulator', 'Date-slip viability heatmap', 'Planner & Explorer interaction modes'],
+  },
+  {
+    icon: Mountain,
+    accent: '#69AFFF',
+    label: 'Terrain Horizon & Obstruction',
+    tag: 'GEOMETRIC BASELINE',
+    tagColor: '#9AA9BF',
+    description:
+      'Evaluate line-of-sight against the local horizon. The baseline model applies the lunar spherical horizon (R = 1,737.4 km), with an architectural hook for high-resolution LOLA DEM topographic horizon masking.',
+    details: ['Spherical tangent horizon (R = 1,737.4 km)', 'Observer eye-level height (2.0 m)', 'LOLA DEM integration hook', 'Honest status: Terrain masking pending M5'],
   },
 ]
 
