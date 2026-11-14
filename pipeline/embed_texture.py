@@ -12,3 +12,4 @@ with open('frontend/src/landing/moonAlbedoData.ts', 'w', encoding='utf-8') as f:
     f.write(content)
 
 print(f"Generated moonAlbedoData.ts successfully ({len(b64)} chars)")
+

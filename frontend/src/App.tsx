@@ -18,8 +18,9 @@ import { ComparisonPanel } from './components/ComparisonPanel';
 import { TerrainToggle } from './components/TerrainToggle';
 import { DateSlipHeatmap } from './components/DateSlipHeatmap';
 import { SkyView } from './components/SkyView';
+import { LunarGlobe, type SiteMarkerData } from './landing/LunarGlobe';
 
-import { GitCompare, AlertTriangle } from 'lucide-react';
+import { GitCompare, AlertTriangle, Sparkles, MapPin } from 'lucide-react';
 
 export default function App() {
   const [catalogue, setCatalogue] = useState<SiteCatalogue | null>(null);
@@ -40,7 +41,7 @@ export default function App() {
     setCursorTime,
   } = useMissionState();
 
-  // Sync site from URL query parameter (e.g. /app?site=shackleton-rim) with validation
+  // Sync site and mode from URL query parameters (e.g. /app?site=shackleton-rim&mode=explorer)
   useEffect(() => {
     const siteParam = searchParams.get('site');
     if (siteParam && catalogue) {
@@ -49,7 +50,13 @@ export default function App() {
         setPrimarySite(siteParam);
       }
     }
-  }, [searchParams, catalogue, setPrimarySite, state.primarySiteId]);
+    const modeParam = searchParams.get('mode');
+    if (modeParam === 'explorer' || modeParam === 'planner') {
+      if (state.mode !== modeParam) {
+        setMode(modeParam);
+      }
+    }
+  }, [searchParams, catalogue, setPrimarySite, setMode, state.primarySiteId, state.mode]);
 
   // Load site catalogue on mount
   useEffect(() => {
@@ -110,6 +117,18 @@ export default function App() {
     state,
   );
 
+  // Markers for 3D Lunar Globe
+  const globeSites: SiteMarkerData[] = useMemo(() => {
+    return allSites.map((s) => ({
+      id: s.id,
+      name: s.name,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      region: s.region,
+      mission: s.mission,
+    }));
+  }, [allSites]);
+
   // Handle custom coordinate creation
   const handleAddCustomCoords = (lat: number, lon: number, name: string) => {
     const customSite: LandingSite = {
@@ -135,8 +154,10 @@ export default function App() {
       <Header
         mode={state.mode}
         onModeChange={setMode}
-        dataSource={primaryData.data?.source || 'APPROXIMATE'}
+        dataSource={primaryData.data?.source || null}
         isSimulated={primaryData.isSimulated}
+        loading={primaryData.loading}
+        siteName={primarySite?.name}
       />
 
       {/* Main Container */}
@@ -146,6 +167,72 @@ export default function App() {
           <div className="bg-rose-950/60 border border-rose-500/40 rounded-xl p-3 flex items-center space-x-2 text-rose-300 text-xs font-mono">
             <AlertTriangle className="h-4 w-4 shrink-0 text-rose-400" />
             <span>Catalogue error: {catError}</span>
+          </div>
+        )}
+
+        {/* Explorer Mode: Interactive 3D Lunar Explorer Banner */}
+        {state.mode === 'explorer' && (
+          <div className="bg-slate-950/90 border border-amber-500/30 rounded-2xl p-5 shadow-2xl backdrop-blur relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row items-center gap-6">
+              {/* 3D Moon Canvas */}
+              <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
+                <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+                  <LunarGlobe
+                    sites={globeSites}
+                    selectedSiteId={state.primarySiteId}
+                    onSelectSite={(id) => setPrimarySite(id)}
+                    className="w-full h-full"
+                  />
+                </div>
+                <p className="text-[10px] font-mono text-slate-500 mt-2 text-center">
+                  Drag to rotate 3D Moon &bull; Click surface markers or pills to select landing target
+                </p>
+              </div>
+
+              {/* Explorer Site Summary & Quick Switcher */}
+              <div className="w-full lg:w-1/2 space-y-4">
+                <div className="flex items-center space-x-2 text-amber-400 font-mono text-xs font-bold tracking-wider uppercase">
+                  <Sparkles className="h-4 w-4" />
+                  <span>Interactive 3D Lunar Explorer</span>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-bold font-sans text-slate-100">
+                    {primarySite?.name || 'Selected Site'}
+                  </h2>
+                  <p className="text-sm font-mono text-cyan-300 mt-0.5">
+                    {primarySite ? `${primarySite.latitude >= 0 ? `+${primarySite.latitude.toFixed(2)}°N` : `${Math.abs(primarySite.latitude).toFixed(2)}°S`}, ${primarySite.longitude >= 0 ? `+${primarySite.longitude.toFixed(2)}°E` : `${Math.abs(primarySite.longitude).toFixed(2)}°W`}` : ''} &bull; {primarySite?.mission}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    {primarySite?.description}
+                  </p>
+                </div>
+
+                {/* Candidate Quick Selection Pills */}
+                <div>
+                  <div className="text-[10px] font-mono uppercase text-slate-500 mb-2">
+                    Candidate Landing Sites:
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {allSites.slice(0, 5).map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setPrimarySite(s.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center space-x-1.5 ${
+                          s.id === state.primarySiteId
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.2)] font-bold'
+                            : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        }`}
+                      >
+                        <MapPin className="h-3 w-3" />
+                        <span>{s.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -180,11 +267,11 @@ export default function App() {
             />
 
             {/* Comparison Site Selector */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-lg backdrop-blur space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+            <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl p-4 shadow-xl backdrop-blur space-y-2.5">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
                   <GitCompare className="h-3.5 w-3.5 text-cyan-400" />
-                  <span>Trade Study Site Comparison</span>
+                  <span>Candidate Trade Study</span>
                 </label>
                 {state.comparisonSiteId && (
                   <button
@@ -192,7 +279,7 @@ export default function App() {
                     onClick={() => setComparisonSite(null)}
                     className="text-[10px] font-mono text-rose-400 hover:text-rose-300"
                   >
-                    Clear
+                    Clear Comparison
                   </button>
                 )}
               </div>
@@ -200,14 +287,14 @@ export default function App() {
               <select
                 value={state.comparisonSiteId || ''}
                 onChange={(e) => setComparisonSite(e.target.value ? e.target.value : null)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded px-2.5 py-1.5 text-xs text-slate-200 font-sans focus:border-cyan-500 focus:outline-none"
+                className="w-full bg-slate-900 border border-slate-700/80 rounded px-2.5 py-1.5 text-xs text-slate-200 font-sans focus:border-cyan-500 focus:outline-none"
               >
                 <option value="">-- None (Single Site Mode) --</option>
                 {allSites
                   .filter((s) => s.id !== state.primarySiteId)
                   .map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.name} ({s.latitude.toFixed(2)}°, {s.longitude.toFixed(2)}°)
+                      {s.name} ({s.latitude >= 0 ? `+${s.latitude.toFixed(2)}` : s.latitude.toFixed(2)}°, {s.longitude >= 0 ? `+${s.longitude.toFixed(2)}` : s.longitude.toFixed(2)}°)
                     </option>
                   ))}
               </select>
@@ -223,6 +310,7 @@ export default function App() {
             <CountdownCards
               countdowns={primaryTimeline.countdowns}
               cursorTime={state.cursorTime}
+              useTerrainHorizon={state.useTerrainHorizon}
             />
 
             {/* Viability Score & Objective Weights */}
@@ -292,7 +380,7 @@ export default function App() {
           <div>
             MOONIX &bull; NASA Space Apps Challenge 2026 &bull; Challenge 10 (CLPS)
           </div>
-          <div className="flex items-center space-x-3 text-slate-400">
+          <div className="flex flex-wrap items-center gap-3 text-slate-400">
             <span>Frame: MOON_ME</span>
             <span>&bull;</span>
             <span>Sun Limb: +0.27°</span>
@@ -300,6 +388,8 @@ export default function App() {
             <span>Earth Limb: +0.95°</span>
             <span>&bull;</span>
             <span>Observer: 2.0 m</span>
+            <span>&bull;</span>
+            <span>R_moon: 1,737.4 km</span>
           </div>
         </div>
       </footer>

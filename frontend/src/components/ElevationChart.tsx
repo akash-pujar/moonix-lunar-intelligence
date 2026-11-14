@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import * as d3 from 'd3';
 import type { SiteEphemeris, TerrainHorizon } from '../data/types';
 import { getHorizonElevation } from '../engine/visibility';
-import { Sun, Globe, Crosshair } from 'lucide-react';
+import { Sun, Globe, Crosshair, ShieldCheck, Moon } from 'lucide-react';
 
 interface ElevationChartProps {
   ephemeris: SiteEphemeris | null;
@@ -30,7 +30,7 @@ export const ElevationChart: FC<ElevationChartProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 220 });
+  const [dimensions, setDimensions] = useState({ width: 800, height: 230 });
 
   // Handle responsive resize
   useEffect(() => {
@@ -120,9 +120,36 @@ export const ElevationChart: FC<ElevationChartProps> = ({
     svg.selectAll('*').remove();
 
     const { width, height } = dimensions;
-    const margin = { top: 20, right: 30, bottom: 30, left: 45 };
+    const margin = { top: 20, right: 35, bottom: 32, left: 45 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
+
+    if (innerWidth <= 0 || innerHeight <= 0) return;
+
+    // Define gradients
+    const defs = svg.append('defs');
+
+    // Sun Gradient
+    const sunGradient = defs
+      .append('linearGradient')
+      .attr('id', 'sun-gradient')
+      .attr('x1', '0')
+      .attr('y1', '0')
+      .attr('x2', '0')
+      .attr('y2', '1');
+    sunGradient.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(245, 158, 11, 0.35)');
+    sunGradient.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(245, 158, 11, 0.0)');
+
+    // Earth Gradient
+    const earthGradient = defs
+      .append('linearGradient')
+      .attr('id', 'earth-gradient')
+      .attr('x1', '0')
+      .attr('y1', '0')
+      .attr('x2', '0')
+      .attr('y2', '1');
+    earthGradient.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(56, 189, 248, 0.35)');
+    earthGradient.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(56, 189, 248, 0.0)');
 
     const g = svg
       .append('g')
@@ -134,46 +161,67 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       .domain(d3.extent(chartData, (d) => d.time) as [Date, Date])
       .range([0, innerWidth]);
 
-    const yMin = Math.min(-10, d3.min(chartData, (d) => Math.min(d.el, d.horizonEl)) ?? -10) - 2;
-    const yMax = Math.max(15, d3.max(chartData, (d) => Math.max(d.el, d.horizonEl)) ?? 15) + 3;
+    const dataMin = d3.min(chartData, (d) => Math.min(d.el, d.horizonEl)) ?? -5;
+    const dataMax = d3.max(chartData, (d) => Math.max(d.el, d.horizonEl)) ?? 10;
+    const yMin = Math.min(-8, dataMin - 1.5);
+    const yMax = Math.max(12, dataMax + 2.0);
 
     const yScale = d3.scaleLinear().domain([yMin, yMax]).range([innerHeight, 0]);
 
-    // Grid lines
+    // Grid lines (horizontal)
     g.append('g')
       .attr('class', 'chart-grid')
       .call(
         d3
           .axisLeft(yScale)
+          .ticks(5)
           .tickSize(-innerWidth)
           .tickFormat(() => '')
       )
       .selectAll('line')
-      .attr('stroke', '#1e293b')
-      .attr('stroke-dasharray', '2 4');
+      .attr('stroke', '#131e33')
+      .attr('stroke-dasharray', '3 3');
 
-    // Shaded below-horizon / occlusion regions
+    // Below-horizon shading
+    const zeroY = yScale(0);
+    g.append('rect')
+      .attr('x', 0)
+      .attr('y', Math.max(0, zeroY))
+      .attr('width', innerWidth)
+      .attr('height', Math.max(0, innerHeight - zeroY))
+      .attr('fill', 'rgba(15, 23, 42, 0.45)');
+
+    // Area fill under elevation curve
     const areaGenerator = d3
       .area<(typeof chartData)[0]>()
       .x((d) => xScale(d.time))
       .y0(innerHeight)
-      .y1((d) => yScale(Math.min(d.el, d.horizonEl)));
+      .y1((d) => yScale(Math.max(yMin, d.el)));
 
     g.append('path')
       .datum(chartData)
-      .attr('fill', type === 'sun' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(59, 130, 246, 0.05)')
+      .attr('fill', type === 'sun' ? 'url(#sun-gradient)' : 'url(#earth-gradient)')
       .attr('d', areaGenerator);
 
     // Zero-degree Horizon Reference Line
-    const zeroY = yScale(0);
     g.append('line')
       .attr('x1', 0)
       .attr('x2', innerWidth)
       .attr('y1', zeroY)
       .attr('y2', zeroY)
       .attr('stroke', '#475569')
-      .attr('stroke-width', 1)
+      .attr('stroke-width', 1.2)
       .attr('stroke-dasharray', '4 4');
+
+    // Horizon label
+    g.append('text')
+      .attr('x', innerWidth - 4)
+      .attr('y', zeroY - 4)
+      .attr('text-anchor', 'end')
+      .attr('fill', '#94a3b8')
+      .attr('font-size', '9px')
+      .attr('font-family', 'ui-monospace, monospace')
+      .text('0.0° GEOMETRIC HORIZON');
 
     // Terrain Horizon Profile Line (if active)
     if (useTerrainHorizon && terrain) {
@@ -186,7 +234,7 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       g.append('path')
         .datum(chartData)
         .attr('fill', 'none')
-        .attr('stroke', '#64748b')
+        .attr('stroke', '#94a3b8')
         .attr('stroke-width', 1.5)
         .attr('stroke-dasharray', '3 3')
         .attr('d', terrainLine);
@@ -199,19 +247,19 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       .y((d) => yScale(d.el))
       .curve(d3.curveMonotoneX);
 
-    const lineColor = type === 'sun' ? '#fbbf24' : '#60a5fa'; // amber-400 vs blue-400
+    const lineColor = type === 'sun' ? '#fbbf24' : '#38bdf8'; // solar amber vs cyan/blue
 
     g.append('path')
       .datum(chartData)
       .attr('fill', 'none')
       .attr('stroke', lineColor)
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 2.2)
       .attr('d', elevationLine);
 
     // Axes
     const xAxis = d3
       .axisBottom(xScale)
-      .ticks(Math.max(4, Math.floor(innerWidth / 90)))
+      .ticks(Math.max(4, Math.floor(innerWidth / 100)))
       .tickFormat((d) => d3.timeFormat('%b %d')(d as Date));
 
     g.append('g')
@@ -219,6 +267,7 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       .call(xAxis)
       .attr('color', '#64748b')
       .selectAll('text')
+      .attr('fill', '#94a3b8')
       .attr('font-size', '10px')
       .attr('font-family', 'ui-monospace, monospace');
 
@@ -228,6 +277,7 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       .call(yAxis)
       .attr('color', '#64748b')
       .selectAll('text')
+      .attr('fill', '#94a3b8')
       .attr('font-size', '10px')
       .attr('font-family', 'ui-monospace, monospace');
 
@@ -251,10 +301,11 @@ export const ElevationChart: FC<ElevationChartProps> = ({
       g.append('circle')
         .attr('cx', cursorX)
         .attr('cy', cursorY)
-        .attr('r', 4)
+        .attr('r', 5)
         .attr('fill', '#22d3ee')
-        .attr('stroke', '#083344')
-        .attr('stroke-width', 1.5);
+        .attr('stroke', '#082f49')
+        .attr('stroke-width', 2)
+        .attr('filter', 'drop-shadow(0 0 6px rgba(34, 211, 238, 0.6))');
     }
 
     // Invisible Click / Drag Overlay
@@ -282,66 +333,88 @@ export const ElevationChart: FC<ElevationChartProps> = ({
   return (
     <div
       ref={containerRef}
-      className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-lg backdrop-blur space-y-2"
+      className="bg-slate-950/90 border border-slate-800/90 rounded-xl p-4 shadow-xl backdrop-blur space-y-3"
     >
       {/* Header with Telemetry Readout at Cursor */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
         <div className="flex items-center space-x-2">
-          {isSun ? (
-            <Sun className="h-4 w-4 text-amber-400" />
-          ) : (
-            <Globe className="h-4 w-4 text-blue-400" />
-          )}
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200">
-            {title || (isSun ? 'Solar Elevation Timeline' : 'Direct-to-Earth Elevation Timeline')}
-          </span>
-          {ephemeris?.source === 'SPICE' ? (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/40 bg-emerald-950/60 text-emerald-300">
-              SPICE DE440
-            </span>
-          ) : ephemeris?.source === 'HORIZONS' ? (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-blue-500/40 bg-blue-950/60 text-blue-300">
-              HORIZONS JPL
-            </span>
-          ) : (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-amber-500/40 bg-amber-950/60 text-amber-300">
-              APPROXIMATE MODEL
-            </span>
-          )}
+          <div
+            className={`p-1.5 rounded-lg border ${
+              isSun
+                ? 'bg-amber-950/40 border-amber-500/40 text-amber-300'
+                : 'bg-cyan-950/40 border-cyan-500/40 text-cyan-300'
+            }`}
+          >
+            {isSun ? <Sun className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-100">
+                {title || (isSun ? 'Solar Elevation & Illumination' : 'Direct-to-Earth Line-of-Sight')}
+              </span>
+              {ephemeris?.source === 'SPICE' ? (
+                <span className="text-[9.5px] font-mono px-2 py-0.5 rounded border border-emerald-500/40 bg-emerald-950/60 text-emerald-300 font-semibold">
+                  SPICE DE440
+                </span>
+              ) : ephemeris?.source === 'HORIZONS' ? (
+                <span className="text-[9.5px] font-mono px-2 py-0.5 rounded border border-blue-500/40 bg-blue-950/60 text-blue-300 font-semibold">
+                  HORIZONS JPL
+                </span>
+              ) : (
+                <span className="text-[9.5px] font-mono px-2 py-0.5 rounded border border-amber-500/40 bg-amber-950/60 text-amber-300 font-semibold">
+                  APPROXIMATE MODEL
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400 font-mono">
+              {isSun ? 'Solar elevation angle with +0.27° solar limb optical threshold' : 'Earth elevation angle with +0.95° Earth limb and parallax correction'}
+            </p>
+          </div>
         </div>
 
+        {/* Telemetry at Cursor */}
         {cursorPoint ? (
-          <div className="flex items-center space-x-3 text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-mono bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
             <span className="text-slate-400 flex items-center space-x-1">
               <Crosshair className="h-3 w-3 text-cyan-400" />
-              <span>Cursor:</span>
-              <span className="text-slate-200">
+              <span className="text-cyan-300 font-semibold">
                 {new Date(cursorPoint.timeStr).toISOString().slice(5, 16).replace('T', ' ')} UTC
               </span>
             </span>
-            <span className={`font-bold ${isSun ? 'text-amber-400' : 'text-blue-400'}`}>
-              El: {cursorPoint.el.toFixed(2)}°
+            <span className="text-slate-600">&bull;</span>
+            <span className={`font-bold ${isSun ? 'text-amber-400' : 'text-cyan-400'}`}>
+              El: {cursorPoint.el >= 0 ? `+${cursorPoint.el.toFixed(2)}°` : `${cursorPoint.el.toFixed(2)}°`}
             </span>
             <span className="text-slate-400">Az: {cursorPoint.az.toFixed(1)}°</span>
             <span
-              className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+              className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center space-x-1 ${
                 cursorPoint.isVisible
                   ? isSun
-                    ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
-                    : 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
-                  : 'bg-slate-800 text-slate-400'
+                    ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
+                    : 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40'
+                  : 'bg-slate-800 text-slate-400 border border-slate-700'
               }`}
             >
-              {cursorPoint.isVisible ? (isSun ? 'SUNLIT' : 'LOS OK') : (isSun ? 'DARK' : 'LOS OCCLUDED')}
+              {cursorPoint.isVisible ? (
+                <>
+                  <ShieldCheck className="h-2.5 w-2.5" />
+                  <span>{isSun ? 'SUNLIT' : 'LOS NOMINAL'}</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-2.5 w-2.5" />
+                  <span>{isSun ? 'DARK / OCCLUDED' : 'COMM OCCLUDED'}</span>
+                </>
+              )}
             </span>
           </div>
         ) : (
-          <span className="text-xs font-mono text-slate-500">No data in window</span>
+          <span className="text-xs font-mono text-slate-500">No telemetry in window</span>
         )}
       </div>
 
       {/* SVG Canvas */}
-      <div className="relative w-full h-[220px]">
+      <div className="relative w-full h-[230px]">
         {chartData.length === 0 ? (
           <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-mono">
             Loading ephemeris timeline...
@@ -351,12 +424,12 @@ export const ElevationChart: FC<ElevationChartProps> = ({
         )}
       </div>
 
-      {/* Legend & Guide */}
-      <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-1 border-t border-slate-800/60">
-        <div className="flex items-center space-x-4">
+      {/* Legend & Scrub Guide */}
+      <div className="flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-400 pt-1 border-t border-slate-800/60 gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center space-x-1.5">
-            <span className={`w-3 h-0.5 rounded ${isSun ? 'bg-amber-400' : 'bg-blue-400'}`} />
-            <span>{isSun ? 'Sun Elevation' : 'Earth Elevation'}</span>
+            <span className={`w-3 h-1 rounded ${isSun ? 'bg-amber-400' : 'bg-cyan-400'}`} />
+            <span className="text-slate-300">{isSun ? 'Sun Elevation Curve' : 'Earth Elevation Curve'}</span>
           </div>
           <div className="flex items-center space-x-1.5">
             <span className="w-3 h-0.5 border-t border-dashed border-slate-400" />
@@ -369,7 +442,10 @@ export const ElevationChart: FC<ElevationChartProps> = ({
             </div>
           )}
         </div>
-        <div className="text-cyan-400/80">Click or drag timeline to move mission cursor</div>
+        <div className="text-cyan-400/90 flex items-center space-x-1">
+          <Crosshair className="h-3 w-3" />
+          <span>Click or drag timeline to scrub mission cursor</span>
+        </div>
       </div>
     </div>
   );

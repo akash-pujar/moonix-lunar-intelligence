@@ -1,4 +1,4 @@
-﻿# capture_3d_lunar_suite.ps1 — Capture all refined 3D Moon and section screenshots with virtual time budget
+# capture_3d_lunar_suite.ps1 — Capture all refined 3D Moon and section screenshots with virtual time budget
 $chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 $artDir = "C:\Users\akash\.gemini\antigravity\brain\9dd44fba-6ccf-4f1a-86f2-eab38f471232"
 $baseUrl = "http://localhost:5173"
