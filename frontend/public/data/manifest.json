@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-11-14T12:00:00Z",
+  "timeRange": {
+    "start": "2026-11-01T00:00:00Z",
+    "end": "2028-12-31T23:00:00Z"
+  },
+  "stepSeconds": 3600,
+  "note": "Ephemeris data has not yet been generated from SPICE or Horizons. The frontend uses approximate sub-solar/sub-Earth geometry calculations as a fallback. These are labeled APPROXIMATE and carry estimated uncertainty of 1-2 degrees.",
+  "sites": []
+}
+

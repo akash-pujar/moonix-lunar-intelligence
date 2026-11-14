@@ -1,0 +1,57 @@
+# MOONIX root .gitignore
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# SPICE kernels (large binary files)
+pipeline/kernels/
+*.bsp
+*.tpc
+*.tf
+*.tls
+*.bpc
+
+# LOLA data
+pipeline/lola_data/
+*.tif
+*.img
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+*.local
+.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
