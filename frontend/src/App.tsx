@@ -41,7 +41,7 @@ export default function App() {
     setCursorTime,
   } = useMissionState();
 
-  // Sync site and mode from URL query parameters (e.g. /app?site=shackleton-rim&mode=explorer)
+  // Sync site, mode, comparison site, and date slip from URL query parameters (e.g. /app?site=shackleton-rim&mode=explorer&slip=14&compare=malapert-massif)
   useEffect(() => {
     const siteParam = searchParams.get('site');
     if (siteParam && catalogue) {
@@ -56,7 +56,32 @@ export default function App() {
         setMode(modeParam);
       }
     }
-  }, [searchParams, catalogue, setPrimarySite, setMode, state.primarySiteId, state.mode]);
+    const compareParam = searchParams.get('compare');
+    if (compareParam && catalogue) {
+      const isValid = catalogue.sites.some((s) => s.id === compareParam);
+      if (isValid && state.comparisonSiteId !== compareParam) {
+        setComparisonSite(compareParam);
+      }
+    }
+    const slipParam = searchParams.get('slip');
+    if (slipParam && !isNaN(parseInt(slipParam, 10))) {
+      const slipNum = parseInt(slipParam, 10);
+      if (state.dateSlipDays !== slipNum) {
+        setDateSlip(slipNum);
+      }
+    }
+  }, [
+    searchParams,
+    catalogue,
+    setPrimarySite,
+    setMode,
+    setComparisonSite,
+    setDateSlip,
+    state.primarySiteId,
+    state.mode,
+    state.comparisonSiteId,
+    state.dateSlipDays,
+  ]);
 
   // Load site catalogue on mount
   useEffect(() => {
@@ -328,6 +353,8 @@ export default function App() {
                 comparisonMetrics={comparisonTimeline.metrics}
                 primaryViability={primaryTimeline.viability}
                 comparisonViability={comparisonTimeline.viability}
+                allSites={allSites}
+                onSelectComparison={(id) => setComparisonSite(id)}
                 onClearComparison={() => setComparisonSite(null)}
               />
             )}

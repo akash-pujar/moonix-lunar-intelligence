@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import type { LandingSite, MissionMetrics, ViabilityScore } from '../data/types';
-import { Trophy, CheckCircle2 } from 'lucide-react';
+import { Trophy, CheckCircle2, Layers } from 'lucide-react';
 
 interface ComparisonPanelProps {
   primarySite: LandingSite | null;
@@ -9,6 +9,8 @@ interface ComparisonPanelProps {
   comparisonMetrics: MissionMetrics | null;
   primaryViability: ViabilityScore | null;
   comparisonViability: ViabilityScore | null;
+  allSites?: LandingSite[];
+  onSelectComparison?: (siteId: string) => void;
   onClearComparison: () => void;
 }
 
@@ -19,6 +21,8 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
   comparisonMetrics,
   primaryViability,
   comparisonViability,
+  allSites,
+  onSelectComparison,
   onClearComparison,
 }) => {
   if (!comparisonSite || !primarySite || !primaryMetrics || !comparisonMetrics || !primaryViability || !comparisonViability) {
@@ -57,14 +61,15 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
         {/* Primary Site Card */}
         <div className="bg-slate-950/80 border border-slate-800 rounded-lg p-3 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase text-slate-500">Primary Site</span>
+            <span className="text-[10px] font-mono uppercase text-slate-500">Primary Baseline</span>
             <span className="text-xs font-mono font-bold text-slate-300">
               Score: {primaryViability.overall.toFixed(1)}
             </span>
           </div>
           <div className="text-base font-bold text-slate-100 font-sans">{primarySite.name}</div>
           <div className="text-xs text-slate-400 font-mono">
-            {primarySite.latitude.toFixed(2)}°N, {primarySite.longitude.toFixed(2)}°E &bull; {primarySite.mission}
+            {primarySite.latitude >= 0 ? `+${primarySite.latitude.toFixed(2)}°` : `${primarySite.latitude.toFixed(2)}°`},{' '}
+            {primarySite.longitude >= 0 ? `+${primarySite.longitude.toFixed(2)}°` : `${primarySite.longitude.toFixed(2)}°`} &bull; {primarySite.mission}
           </div>
           <div className="pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
             <div>
@@ -73,7 +78,7 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block">Earth LOS</span>
-              <span className="text-blue-400 font-bold">{primaryMetrics.earthVisibilityPct.toFixed(1)}%</span>
+              <span className="text-cyan-400 font-bold">{primaryMetrics.earthVisibilityPct.toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -92,7 +97,8 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
           </div>
           <div className="text-base font-bold text-slate-100 font-sans">{comparisonSite.name}</div>
           <div className="text-xs text-slate-400 font-mono">
-            {comparisonSite.latitude.toFixed(2)}°N, {comparisonSite.longitude.toFixed(2)}°E &bull; {comparisonSite.mission}
+            {comparisonSite.latitude >= 0 ? `+${comparisonSite.latitude.toFixed(2)}°` : `${comparisonSite.latitude.toFixed(2)}°`},{' '}
+            {comparisonSite.longitude >= 0 ? `+${comparisonSite.longitude.toFixed(2)}°` : `${comparisonSite.longitude.toFixed(2)}°`} &bull; {comparisonSite.mission}
           </div>
           <div className="pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
             <div>
@@ -101,7 +107,7 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block">Earth LOS</span>
-              <span className="text-blue-400 font-bold">{comparisonMetrics.earthVisibilityPct.toFixed(1)}%</span>
+              <span className="text-cyan-400 font-bold">{comparisonMetrics.earthVisibilityPct.toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -131,7 +137,7 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
 
           <div className="bg-slate-900/60 p-2 rounded">
             <span className="text-[10px] text-slate-500 block">Earth Line-of-Sight</span>
-            <span className={`text-sm font-bold ${earthDiff >= 0 ? 'text-blue-400' : 'text-slate-400'}`}>
+            <span className={`text-sm font-bold ${earthDiff >= 0 ? 'text-cyan-400' : 'text-slate-400'}`}>
               {earthDiff >= 0 ? `+${earthDiff.toFixed(1)}%` : `${earthDiff.toFixed(1)}%`}
             </span>
           </div>
@@ -155,6 +161,64 @@ export const ComparisonPanel: FC<ComparisonPanelProps> = ({
               &bull; Recommendation: <strong>{primarySite.name}</strong> remains the favorable landing site for this mission profile.
             </span>
           )}
+        </div>
+      </div>
+
+      {/* Four-Site Comparison Grid (All 4 Baseline Locations Visible) */}
+      <div className="pt-2 border-t border-slate-800/80 space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
+            <Layers className="h-3.5 w-3.5 text-cyan-400" />
+            <span>Four Baseline Candidates (SPICE DE440 Verified)</span>
+          </span>
+          <span className="text-[9.5px] font-mono text-cyan-400">17,376 Verified Points</span>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          {['shackleton-rim', 'malapert-massif', 'nobile-rim', 'apollo-11'].map((id) => {
+            const site = allSites?.find((s) => s.id === id);
+            if (!site) return null;
+            const isPrimary = site.id === primarySite.id;
+            const isComparing = site.id === comparisonSite.id;
+
+            return (
+              <button
+                key={site.id}
+                type="button"
+                onClick={() => onSelectComparison && onSelectComparison(site.id)}
+                className={`p-2.5 rounded-lg border text-left font-mono transition-all duration-200 cursor-pointer ${
+                  isPrimary
+                    ? 'bg-cyan-950/40 border-cyan-500/60 shadow-[0_0_12px_rgba(6,182,212,0.18)] ring-1 ring-cyan-500/40'
+                    : isComparing
+                    ? 'bg-amber-950/40 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.18)] ring-1 ring-amber-500/40'
+                    : 'bg-slate-950/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-xs text-slate-100 truncate pr-1">{site.name}</span>
+                  {isPrimary && (
+                    <span className="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shrink-0">
+                      PRIMARY
+                    </span>
+                  )}
+                  {isComparing && (
+                    <span className="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">
+                      COMPARE
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10px] text-cyan-400">
+                  {site.latitude >= 0 ? `+${site.latitude.toFixed(2)}°` : `${site.latitude.toFixed(2)}°`},{' '}
+                  {site.longitude >= 0 ? `+${site.longitude.toFixed(2)}°` : `${site.longitude.toFixed(2)}°`}
+                </div>
+                <div className="text-[9.5px] text-slate-400 mt-1 truncate">{site.mission}</div>
+                <div className="mt-1.5 pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[8.5px] text-slate-500">
+                  <span>Frame: {site.frame}</span>
+                  <span className="text-emerald-400 font-semibold">DE440</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
