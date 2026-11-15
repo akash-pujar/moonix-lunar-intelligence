@@ -127,3 +127,4 @@ Genuine high-resolution browser captures were rendered and verified:
 - **Data Visualization:** D3.js v7 (time scales, area gradients, crosshair scrubbing)
 - **3D Graphics:** Three.js WebGL with embedded NASA LROC albedo map
 - **Build Status:** Verified clean production build (`npm run build` in 623ms, 0 errors, 0 warnings).
+

@@ -1,4 +1,4 @@
-﻿# capture_dashboard_suite.ps1 — Capture high-resolution mission control dashboard screenshots with process wait
+# capture_dashboard_suite.ps1 — Capture high-resolution mission control dashboard screenshots with process wait
 $chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 $artDir = "C:\Users\akash\.gemini\antigravity\brain\9dd44fba-6ccf-4f1a-86f2-eab38f471232"
 $baseUrl = "http://localhost:5173"
